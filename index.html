@@ -1,0 +1,636 @@
+<title>Índice Airbnb México</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --bg-page:#f0e6d8; --surface:#fbf6ee; --surface-2:#e6d8c3;
+    --ink-1:#2b1d12; --ink-2:#6b543f; --ink-3:#9c8770;
+    --grid:#ddccb2; --border:rgba(43,29,18,.20);
+    --coffee-ink:#5c3a1f;
+    --badge-bg:#e7cda8; --badge-ink:#45280f;
+    --cream:#f7ecd9;
+    --price-1:#d9b48a; --price-2:#c08a52; --price-3:#96602e; --price-4:#6b3f1a; --price-5:#45280f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg-page:#1c140d; --surface:#251c13; --surface-2:#2e2318;
+      --ink-1:#f2e6d3; --ink-2:#cdb89c; --ink-3:#8f7a63;
+      --grid:#3a2c1d; --border:rgba(242,230,211,.18);
+      --coffee-ink:#d9b48a;
+      --badge-bg:#4a331f; --badge-ink:#f0d9b8;
+      --cream:#f7ecd9;
+      --price-1:#f0d9b8; --price-2:#d9b48a; --price-3:#c08a52; --price-4:#96602e; --price-5:#6b3f1a;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg-page:#1c140d; --surface:#251c13; --surface-2:#2e2318;
+    --ink-1:#f2e6d3; --ink-2:#cdb89c; --ink-3:#8f7a63;
+    --grid:#3a2c1d; --border:rgba(242,230,211,.18);
+    --coffee-ink:#d9b48a;
+    --badge-bg:#4a331f; --badge-ink:#f0d9b8;
+    --cream:#f7ecd9;
+    --price-1:#f0d9b8; --price-2:#d9b48a; --price-3:#c08a52; --price-4:#96602e; --price-5:#6b3f1a;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg-page); color:var(--ink-1);
+    font-family:"Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+
+  h1,h2,h3{ font-family:"Bricolage Grotesque", system-ui, sans-serif; font-weight:800; letter-spacing:-0.01em; }
+  .mono, table td.num, .kpi-value, .legend-label, .section-num, .rank-value, .rank-rank{
+    font-family:"Space Mono", ui-monospace, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a{ color:var(--coffee-ink); text-decoration-thickness:1.5px; }
+
+  .page{ max-width:1180px; margin:0 auto; padding:0 20px; }
+
+  /* ---------- brand band / masthead ---------- */
+  .band-brand{ background:#3b2415; }
+  .band-brand .page{ padding-top:48px; padding-bottom:34px; }
+  .eyebrow{
+    font-family:"Space Mono", monospace; font-size:12.5px; font-weight:700; letter-spacing:.09em;
+    text-transform:uppercase; color:#e8c896; margin:0 0 14px;
+  }
+  .masthead h1{
+    color:var(--cream);
+    font-size:clamp(2.3rem, 5.2vw, 3.6rem); line-height:.98;
+    margin:0 0 14px; text-wrap:balance;
+  }
+  .masthead .lede{
+    font-size:1.05rem; color:#e8d3ba; max-width:62ch; margin:0 0 26px; text-wrap:pretty;
+  }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px 30px; padding-top:20px; border-top:2px solid rgba(255,247,239,.3); }
+  .meta-item{ display:flex; flex-direction:column; gap:3px; }
+  .meta-item .v{ font-family:"Space Mono",monospace; font-size:1.05rem; font-weight:700; color:var(--cream); }
+  .meta-item .k{ font-size:11px; color:#cba579; text-transform:uppercase; letter-spacing:.07em; }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    position:sticky; top:0; z-index:5; background:var(--bg-page);
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+    padding:16px 0; border-bottom:2px solid var(--ink-1); margin-bottom:8px;
+  }
+  .search-wrap{ position:relative; flex:1 1 260px; max-width:380px; }
+  .search-wrap input{
+    width:100%; padding:9px 12px 9px 34px; border-radius:2px; border:2px solid var(--ink-1);
+    background:var(--surface); color:var(--ink-1); font-size:14px; font-family:"Work Sans",inherit;
+  }
+  .search-wrap input:focus{ outline:2px solid var(--coffee-ink); outline-offset:1px; }
+  .search-wrap svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); opacity:.6; }
+
+  .segmented{ display:inline-flex; border:2px solid var(--ink-1); border-radius:2px; overflow:hidden; }
+  .segmented button{
+    font-family:"Space Mono", monospace; font-size:12.5px; font-weight:700; padding:8px 14px; border:0; cursor:pointer;
+    background:var(--surface); color:var(--ink-2); text-transform:uppercase; letter-spacing:.04em;
+  }
+  .segmented button + button{ border-left:2px solid var(--ink-1); }
+  .segmented button[aria-pressed="true"]{ background:var(--price-4); color:#fff; }
+  .segmented button:focus-visible{ outline:2px solid var(--coffee-ink); outline-offset:-2px; }
+
+  /* ---------- kpis ---------- */
+  .kpis{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:2px;
+    background:var(--ink-1); border:2px solid var(--ink-1);
+    margin:28px 0;
+  }
+  .kpi{ background:var(--surface); padding:18px 16px; display:flex; flex-direction:column; gap:7px; }
+  .kpi-value{ font-size:1.55rem; font-weight:700; letter-spacing:-0.01em; color:var(--ink-1); }
+  .kpi-label{ font-size:11.5px; color:var(--coffee-ink); text-transform:uppercase; letter-spacing:.05em; font-weight:700; }
+  .kpi-sub{ font-size:12.5px; color:var(--ink-2); }
+
+  /* ---------- panels ---------- */
+  .panel{ margin:48px 0; scroll-margin-top:64px; }
+  .panel-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
+  .section-num{ font-size:13px; font-weight:700; color:var(--coffee-ink); }
+  .panel h2{ font-size:1.55rem; font-weight:800; margin:0; }
+  .panel .panel-note{ font-size:13px; color:var(--ink-2); margin:2px 0 18px 0; max-width:70ch; padding-left:0; }
+  .card{
+    background:var(--surface); border:2px solid var(--ink-1); border-radius:2px;
+    padding:20px;
+  }
+
+  /* ---------- ranking ---------- */
+  .rank-list{ max-height:560px; overflow-y:auto; overflow-x:hidden; padding-right:4px; }
+  .rank-row{
+    display:grid; grid-template-columns:26px minmax(120px,180px) 1fr 80px; align-items:center;
+    gap:10px; padding:6px 2px; border-bottom:1px solid var(--grid);
+  }
+  .rank-row:hover{ background:var(--surface-2); }
+  .rank-row.hidden{ display:none; }
+  .rank-rank{ font-size:11px; color:var(--ink-3); text-align:right; }
+  .rank-name{ font-size:13.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rank-name .state{ color:var(--ink-3); font-weight:400; }
+  .rank-track{ position:relative; height:14px; background:var(--surface-2); border:1px solid var(--border); }
+  .rank-fill{ position:absolute; inset:0 auto 0 0; background:var(--price-4); }
+  .rank-value{ font-size:12.5px; text-align:right; color:var(--ink-1); font-weight:700; }
+  .rank-empty{ display:none; padding:24px 4px; color:var(--ink-3); font-size:13.5px; }
+
+  /* ---------- histogram ---------- */
+  .hist-wrap svg{ width:100%; height:auto; display:block; }
+  .hist-bar{ fill:var(--price-4); }
+  .hist-bar:hover{ fill:var(--price-5); }
+  .hist-axis-label{ font-size:9.5px; fill:var(--ink-3); font-family:"Space Mono", monospace; }
+  .hist-grid{ stroke:var(--grid); stroke-width:1; }
+  .hist-median-line{ stroke:var(--coffee-ink); stroke-width:1.6; stroke-dasharray:4 3; }
+  .hist-median-label{ font-size:10.5px; fill:var(--coffee-ink); font-weight:700; font-family:"Space Mono",monospace; }
+  .dist-stats{ display:flex; gap:24px; flex-wrap:wrap; margin-top:16px; padding-top:16px; border-top:2px solid var(--ink-1); }
+  .dist-stat{ display:flex; flex-direction:column; gap:2px; }
+  .dist-stat .v{ font-family:"Space Mono",monospace; font-size:1.05rem; font-weight:700; }
+  .dist-stat .k{ font-size:11px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---------- geo ---------- */
+  .geo-layout{ display:grid; grid-template-columns:1fr 200px; gap:20px; }
+  @media (max-width:720px){ .geo-layout{ grid-template-columns:1fr; } }
+  .geo-wrap svg{ width:100%; height:auto; display:block; }
+  .geo-dot{ stroke:var(--surface); stroke-width:1; cursor:pointer; }
+  .geo-dot.dim{ opacity:.15; }
+  .geo-label{ font-size:9px; fill:var(--ink-3); font-family:"Space Mono",monospace; }
+  .geo-legend{ display:flex; flex-direction:column; gap:14px; padding-top:4px; }
+  .legend-gradient{ height:10px; border:1px solid var(--ink-1); background:linear-gradient(90deg, var(--price-1), var(--price-2), var(--price-3), var(--price-4), var(--price-5)); }
+  .legend-scale{ display:flex; justify-content:space-between; font-size:11px; color:var(--ink-3); margin-top:4px; }
+  .legend-label{ font-size:11.5px; color:var(--ink-2); font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+  .geo-size-demo{ display:flex; align-items:center; gap:10px; }
+  .geo-size-demo svg{ flex:none; }
+
+  /* ---------- table ---------- */
+  .table-wrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:720px; }
+  thead th{
+    position:sticky; top:0; background:var(--surface); text-align:left; font-size:11px;
+    text-transform:uppercase; letter-spacing:.04em; color:var(--ink-2); font-weight:700;
+    padding:10px 12px; border-bottom:2px solid var(--ink-1); cursor:pointer; white-space:nowrap; user-select:none;
+    font-family:"Space Mono", monospace;
+  }
+  thead th:hover{ color:var(--ink-1); }
+  thead th .arrow{ opacity:0; margin-left:3px; }
+  thead th.sorted .arrow{ opacity:1; color:var(--coffee-ink); }
+  tbody td{ padding:8px 12px; border-bottom:1px solid var(--grid); }
+  tbody td.num{ text-align:right; }
+  tbody tr:hover{ background:var(--surface-2); }
+  tbody tr.hidden{ display:none; }
+  .badge{ display:inline-block; padding:1px 7px; font-size:11px; font-weight:700; background:var(--badge-bg); color:var(--badge-ink); }
+
+  /* ---------- footer ---------- */
+  footer{ margin-top:56px; padding-top:24px; border-top:2px solid var(--ink-1); padding-bottom:60px; }
+  footer p{ font-size:13px; color:var(--ink-2); max-width:74ch; margin:0 0 12px; }
+  footer .cite{ font-size:12px; color:var(--ink-3); font-family:"Space Mono",monospace; }
+
+  /* ---------- tooltip ---------- */
+  .tooltip{
+    position:fixed; pointer-events:none; z-index:50; background:var(--ink-1); color:var(--bg-page);
+    font-size:12.5px; line-height:1.4; padding:8px 10px; border-radius:2px; max-width:220px;
+    box-shadow:0 8px 20px rgba(0,0,0,.3); transform:translate(-50%,-100%); margin-top:-10px;
+  }
+  .tooltip b{ display:block; font-size:13px; margin-bottom:2px; font-family:"Space Mono",monospace; }
+  .tooltip[hidden]{ display:none; }
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+</style>
+
+<div class="band-brand">
+  <div class="page">
+    <header class="masthead">
+      <p class="eyebrow">Estancia AD26 · Vivienda y Airbnb en México</p>
+      <h1>Índice Airbnb México</h1>
+      <p class="lede">Tarifas de hospedaje disponibles en 59 ciudades mexicanas, para una estancia estándar de martes a jueves reservada con 29 días de anticipación. No es un censo del inventario de Airbnb: es un corte comparable, ciudad por ciudad.</p>
+      <div class="meta-row" id="meta-row"><!-- JS --></div>
+    </header>
+  </div>
+</div>
+
+<div class="page">
+
+  <nav class="toolbar" aria-label="Filtros">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="Buscar ciudad o estado…" autocomplete="off">
+    </div>
+    <div class="segmented" role="group" aria-label="Métrica de precio">
+      <button type="button" data-metric="price_median" aria-pressed="true">Mediana</button>
+      <button type="button" data-metric="price_mean" aria-pressed="false">Promedio</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <section class="kpis" id="kpis" aria-label="Resumen nacional"><!-- JS --></section>
+
+    <section class="panel" id="ranking">
+      <div class="panel-head"><span class="section-num">01</span><h2>Ranking por ciudad</h2></div>
+      <p class="panel-note">Tarifa por noche (subtotal de hospedaje de la estancia entre 2), de mayor a menor. Usa el buscador de arriba para encontrar una ciudad.</p>
+      <div class="card">
+        <div class="rank-list" id="rank-list"><!-- JS --></div>
+        <p class="rank-empty" id="rank-empty">Sin resultados para esa búsqueda.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="distribution">
+      <div class="panel-head"><span class="section-num">02</span><h2>Distribución nacional de tarifas</h2></div>
+      <p class="panel-note">Cómo se reparten los 121,218 anuncios de las 59 ciudades por rango de precio por noche.</p>
+      <div class="card">
+        <div class="hist-wrap" id="hist-wrap"><!-- JS --></div>
+        <div class="dist-stats" id="dist-stats"><!-- JS --></div>
+      </div>
+    </section>
+
+    <section class="panel" id="geo">
+      <div class="panel-head"><span class="section-num">03</span><h2>Dispersión geográfica</h2></div>
+      <p class="panel-note">Cada punto es una ciudad, ubicada por su centroide de anuncios (proyección equirectangular corregida por latitud media). El tamaño indica el número de anuncios; el color, la tarifa.</p>
+      <div class="card geo-layout">
+        <div class="geo-wrap" id="geo-wrap"><!-- JS --></div>
+        <div class="geo-legend">
+          <div>
+            <span class="legend-label">Tarifa por noche</span>
+            <div class="legend-gradient"></div>
+            <div class="legend-scale" id="geo-legend-scale"><!-- JS --></div>
+          </div>
+          <div>
+            <span class="legend-label">Anuncios en la ciudad</span>
+            <div class="geo-size-demo" id="geo-size-demo"><!-- JS --></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="tabla">
+      <div class="panel-head"><span class="section-num">04</span><h2>Las 59 ciudades</h2></div>
+      <p class="panel-note">Tabla completa. Haz clic en un encabezado para ordenar.</p>
+      <div class="card table-wrap">
+        <table id="city-table">
+          <thead><tr>
+            <th data-key="city" data-type="str">Ciudad<span class="arrow">▾</span></th>
+            <th data-key="state" data-type="str">Estado<span class="arrow">▾</span></th>
+            <th data-key="n" data-type="num">Anuncios<span class="arrow">▾</span></th>
+            <th data-key="price_median" data-type="num">Mediana/noche<span class="arrow">▾</span></th>
+            <th data-key="price_mean" data-type="num">Promedio/noche<span class="arrow">▾</span></th>
+            <th data-key="rating_mean" data-type="num">Calificación<span class="arrow">▾</span></th>
+            <th data-key="pct_superhost" data-type="num">% Superanfitrión<span class="arrow">▾</span></th>
+          </tr></thead>
+          <tbody id="city-table-body"><!-- JS --></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p><b style="color:var(--ink-1)">Qué mide este panel.</b> El precio es la tarifa disponible en la búsqueda de Airbnb para una estancia de martes a jueves (2 noches), reservada 29 días antes de la llegada — no el precio de lista de todos los anuncios ni descuentos de última hora. La tarifa por noche se calcula dividiendo entre 2 el subtotal de hospedaje de la estancia. La unidad de análisis es la ciudad, acotada a su mancha urbana; se excluye la Zona Metropolitana del Valle de México por alcance del proyecto.</p>
+    <p><b style="color:var(--ink-1)">Estado de la base.</b> <span id="footer-status"><!-- JS --></span></p>
+    <p class="cite">Proyecto de la estancia AD26, en coautoría con el Prof. Diego A. Canales. Datos propios, recolectados con fines de investigación académica.</p>
+  </footer>
+
+</div>
+
+<div class="tooltip" id="tooltip" hidden role="status"></div>
+
+<script id="dashboard-data" type="application/json">
+{"generated_at":"2026-09-15","national":{"n_cities":59,"n_listings":121218,"price_mean":2609.16,"price_median":1423.64,"price_p10":630.42,"price_p90":4655.06,"pct_superhost":0.1834,"pct_rated":0.6818,"hist":[257,5257,13514,17005,15224,12535,17228,10187,7226,7663,4210,4970,2236,3706],"hist_edges":[0,250,500,750,1000,1250,1500,2000,2500,3000,4000,5000,7500,10000,null],"hist_labels":["0-250","250-500","500-750","750-1k","1k-1.25k","1.25k-1.5k","1.5k-2k","2k-2.5k","2.5k-3k","3k-4k","4k-5k","5k-7.5k","7.5k-10k","10k+"]},"cities":[{"slug":"Los-Cabos,-Baja-California-Sur","city":"Los Cabos","state":"Baja California Sur","n":3024,"lat":22.92223,"lon":-109.86474,"price_mean":8440.23,"price_median":3760.49,"price_p10":1267.9,"price_p25":2108.0,"price_p75":8586.08,"price_p90":17983.08,"price_min":274.97,"price_max":258642.34,"rating_mean":4.83,"pct_rated":0.5096,"pct_new":0.0473,"pct_superhost":0.2265,"pct_favorite":0.2196,"hist":[0,5,44,124,122,116,286,261,259,350,223,356,275,603],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Sayulita--Nay.","city":"Sayulita","state":"Nayarit","n":226,"lat":20.87214,"lon":-105.43421,"price_mean":4093.37,"price_median":2974.97,"price_p10":978.73,"price_p25":1916.72,"price_p75":5084.55,"price_p90":8582.75,"price_min":611.99,"price_max":19294.79,"rating_mean":4.761,"pct_rated":0.7788,"pct_new":0.0088,"pct_superhost":0.3319,"pct_favorite":0.3142,"hist":[0,0,2,23,7,5,22,25,32,33,20,30,11,16],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-08-31"},{"slug":"Zihuatanejo,-Guerrero","city":"Zihuatanejo","state":"Guerrero","n":1142,"lat":17.65679,"lon":-101.59046,"price_mean":4523.1,"price_median":2971.25,"price_p10":1053.09,"price_p25":1745.64,"price_p75":5460.08,"price_p90":9296.41,"price_min":211.0,"price_max":52841.08,"rating_mean":4.73,"pct_rated":0.5333,"pct_new":0.0324,"pct_superhost":0.1042,"pct_favorite":0.1813,"hist":[2,6,36,56,63,61,128,118,105,145,99,137,100,86],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Valle-de-Bravo,-Mexico","city":"Valle de Bravo","state":"Estado de México","n":1275,"lat":19.18352,"lon":-100.12913,"price_mean":5141.31,"price_median":2793.03,"price_p10":878.6,"price_p25":1350.0,"price_p75":6257.5,"price_p90":12219.54,"price_min":415.8,"price_max":51344.77,"rating_mean":4.739,"pct_rated":0.6737,"pct_new":0.0816,"pct_superhost":0.1733,"pct_favorite":0.1906,"hist":[0,9,64,111,99,72,141,95,92,123,80,119,76,194],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Cozumel,-Quintana-Roo","city":"Cozumel","state":"Quintana Roo","n":1435,"lat":20.49148,"lon":-86.95894,"price_mean":2272.33,"price_median":2566.4,"price_p10":822.84,"price_p25":1199.0,"price_p75":2566.4,"price_p90":3000.0,"price_min":207.0,"price_max":19477.1,"rating_mean":4.786,"pct_rated":0.4634,"pct_new":0.0195,"pct_superhost":0.1017,"pct_favorite":0.1763,"hist":[4,14,78,149,137,73,119,87,629,59,27,34,12,13],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Todos-Santos,-Baja-California-Sur","city":"Todos Santos","state":"Baja California Sur","n":315,"lat":23.45584,"lon":-110.23668,"price_mean":4036.45,"price_median":2546.03,"price_p10":1436.4,"price_p25":1919.76,"price_p75":4125.01,"price_p90":7694.75,"price_min":646.69,"price_max":28812.2,"rating_mean":4.847,"pct_rated":0.7619,"pct_new":0.0254,"pct_superhost":0.1746,"pct_favorite":0.3778,"hist":[0,0,1,1,10,30,42,66,32,51,24,25,8,25],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Acapulco,-Guerrero","city":"Acapulco","state":"Guerrero","n":5951,"lat":16.80637,"lon":-99.81823,"price_mean":3967.69,"price_median":2508.0,"price_p10":1171.0,"price_p25":1629.28,"price_p75":4247.45,"price_p90":7273.53,"price_min":262.8,"price_max":138488.08,"rating_mean":4.725,"pct_rated":0.6508,"pct_new":0.0519,"pct_superhost":0.1378,"pct_favorite":0.1936,"hist":[0,17,87,234,403,479,965,743,579,796,532,549,226,341],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Cuernavaca,-Morelos","city":"Cuernavaca","state":"Morelos","n":2963,"lat":18.90765,"lon":-99.21451,"price_mean":3671.24,"price_median":2399.66,"price_p10":713.15,"price_p25":1147.42,"price_p75":4789.75,"price_p90":7580.95,"price_min":184.5,"price_max":65752.74,"rating_mean":4.77,"pct_rated":0.6598,"pct_new":0.0395,"pct_superhost":0.1822,"pct_favorite":0.2406,"hist":[3,89,231,291,216,190,265,236,187,321,238,396,136,164],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Ajijic--Jalisco--Mexico","city":"Ajijic","state":"Jalisco","n":249,"lat":20.29932,"lon":-103.25601,"price_mean":3069.7,"price_median":2378.47,"price_p10":1045.91,"price_p25":1425.0,"price_p75":3316.73,"price_p90":5919.73,"price_min":581.88,"price_max":37706.0,"rating_mean":4.775,"pct_rated":0.7229,"pct_new":0.0683,"pct_superhost":0.2008,"pct_favorite":0.3092,"hist":[0,0,5,17,26,19,29,40,30,35,11,25,8,4],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"San-Miguel-de-Allende,-Guanajuato","city":"San Miguel de Allende","state":"Guanajuato","n":1835,"lat":20.91076,"lon":-100.74581,"price_mean":3596.22,"price_median":2225.0,"price_p10":937.2,"price_p25":1387.25,"price_p75":3664.43,"price_p90":6948.96,"price_min":320.0,"price_max":85461.62,"rating_mean":4.793,"pct_rated":0.6877,"pct_new":0.0529,"pct_superhost":0.1635,"pct_favorite":0.2899,"hist":[0,41,51,137,141,151,301,222,167,213,107,135,59,110],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Tequisquiapan,-Queretaro","city":"Tequisquiapan","state":"Querétaro","n":475,"lat":20.52448,"lon":-99.89126,"price_mean":3093.19,"price_median":2166.0,"price_p10":931.01,"price_p25":1279.56,"price_p75":3823.37,"price_p90":6544.76,"price_min":448.05,"price_max":24122.5,"rating_mean":4.776,"pct_rated":0.7874,"pct_new":0.0421,"pct_superhost":0.1579,"pct_favorite":0.3284,"hist":[0,1,17,48,47,32,77,49,38,57,28,44,22,15],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Puerto-Vallarta,-Jalisco","city":"Puerto Vallarta","state":"Jalisco","n":5812,"lat":20.65284,"lon":-105.24703,"price_mean":3772.56,"price_median":2121.27,"price_p10":951.2,"price_p25":1391.83,"price_p75":3393.03,"price_p90":6060.77,"price_min":293.0,"price_max":290000.0,"rating_mean":4.766,"pct_rated":0.691,"pct_new":0.0557,"pct_superhost":0.2497,"pct_favorite":0.2571,"hist":[0,56,220,359,540,527,975,757,584,659,357,341,166,271],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Isla-Mujeres,-Quintana-Roo","city":"Isla Mujeres","state":"Quintana Roo","n":532,"lat":21.23927,"lon":-86.73674,"price_mean":3475.06,"price_median":1926.04,"price_p10":1005.3,"price_p25":1325.15,"price_p75":3362.64,"price_p90":7738.53,"price_min":305.8,"price_max":40376.75,"rating_mean":4.76,"pct_rated":0.8026,"pct_new":0.0338,"pct_superhost":0.2462,"pct_favorite":0.2444,"hist":[0,2,13,33,60,66,107,73,27,41,19,28,25,38],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Mazatlan,-Sinaloa","city":"Mazatlán","state":"Sinaloa","n":5954,"lat":23.25457,"lon":-106.44417,"price_mean":2652.41,"price_median":1885.3,"price_p10":891.11,"price_p25":1280.14,"price_p75":2932.66,"price_p90":4536.08,"price_min":180.0,"price_max":523694.4,"rating_mean":4.771,"pct_rated":0.5941,"pct_new":0.0423,"pct_superhost":0.1137,"pct_favorite":0.219,"hist":[3,71,308,388,635,705,1071,761,571,648,299,283,120,91],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Ensenada,-Baja-California","city":"Ensenada","state":"Baja California","n":1074,"lat":31.85475,"lon":-116.60827,"price_mean":2592.24,"price_median":1836.0,"price_p10":949.02,"price_p25":1258.0,"price_p75":2926.5,"price_p90":4680.4,"price_min":309.56,"price_max":29739.33,"rating_mean":4.808,"pct_rated":0.8147,"pct_new":0.0363,"pct_superhost":0.2151,"pct_favorite":0.3436,"hist":[0,4,40,92,127,115,218,138,81,115,45,50,22,27],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Bahias-de-Huatulco,-Oaxaca","city":"Bahías de Huatulco","state":"Oaxaca","n":1127,"lat":15.76669,"lon":-96.13044,"price_mean":2716.01,"price_median":1830.0,"price_p10":859.14,"price_p25":1200.79,"price_p75":2927.25,"price_p90":4715.95,"price_min":300.0,"price_max":82210.0,"rating_mean":4.687,"pct_rated":0.6735,"pct_new":0.0532,"pct_superhost":0.1783,"pct_favorite":0.1748,"hist":[0,5,46,121,145,107,185,132,113,113,56,57,21,26],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Tijuana,-Baja-California","city":"Tijuana","state":"Baja California","n":1658,"lat":32.51003,"lon":-117.05544,"price_mean":2749.46,"price_median":1809.73,"price_p10":887.1,"price_p25":1229.76,"price_p75":2875.07,"price_p90":5388.43,"price_min":349.13,"price_max":41932.45,"rating_mean":4.779,"pct_rated":0.7835,"pct_new":0.0537,"pct_superhost":0.1846,"pct_favorite":0.2937,"hist":[0,14,97,116,201,186,327,208,134,120,69,94,37,55],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Bernal,-Queretaro","city":"Bernal","state":"Querétaro","n":414,"lat":20.73872,"lon":-99.941,"price_mean":2361.97,"price_median":1738.3,"price_p10":953.4,"price_p25":1200.5,"price_p75":2694.16,"price_p90":4344.6,"price_min":372.0,"price_max":18271.12,"rating_mean":4.729,"pct_rated":0.7101,"pct_new":0.0531,"pct_superhost":0.1739,"pct_favorite":0.1957,"hist":[0,7,7,38,65,43,87,46,38,32,25,11,8,7],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Tepoztlan,-Morelos","city":"Tepoztlán","state":"Morelos","n":1129,"lat":18.98329,"lon":-99.09466,"price_mean":2899.43,"price_median":1709.5,"price_p10":814.63,"price_p25":1115.5,"price_p75":2978.84,"price_p90":6199.0,"price_min":231.59,"price_max":45000.0,"rating_mean":4.77,"pct_rated":0.713,"pct_new":0.031,"pct_superhost":0.2179,"pct_favorite":0.2223,"hist":[4,14,71,134,149,117,184,109,66,85,35,75,41,45],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"La-Paz,-Baja-California-Sur","city":"La Paz","state":"Baja California Sur","n":1505,"lat":24.15199,"lon":-110.31652,"price_mean":3562.92,"price_median":1625.0,"price_p10":814.63,"price_p25":1047.39,"price_p75":2550.0,"price_p90":4993.2,"price_min":315.0,"price_max":300000.0,"rating_mean":4.791,"pct_rated":0.8146,"pct_new":0.0372,"pct_superhost":0.2186,"pct_favorite":0.3581,"hist":[0,9,86,246,179,176,271,151,102,90,44,73,21,57],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Cancún--Q.-Roo.","city":"Cancún","state":"Quintana Roo","n":6503,"lat":21.15712,"lon":-86.82133,"price_mean":3717.03,"price_median":1480.0,"price_p10":597.75,"price_p25":904.24,"price_p75":2803.57,"price_p90":7731.06,"price_min":171.0,"price_max":264790.72,"rating_mean":4.693,"pct_rated":0.5762,"pct_new":0.0627,"pct_superhost":0.1462,"pct_favorite":0.1529,"hist":[11,343,768,854,693,613,838,548,314,372,191,285,176,497],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-14"},{"slug":"Puerto-Escondido,-Oaxaca","city":"Puerto Escondido","state":"Oaxaca","n":2722,"lat":15.84902,"lon":-97.05567,"price_mean":2240.53,"price_median":1470.32,"price_p10":700.0,"price_p25":1001.63,"price_p75":2348.84,"price_p90":4499.87,"price_min":184.5,"price_max":68049.0,"rating_mean":4.727,"pct_rated":0.719,"pct_new":0.0467,"pct_superhost":0.2439,"pct_favorite":0.2109,"hist":[2,105,214,341,342,387,452,248,155,158,87,132,50,49],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-04"},{"slug":"Holbox,-Quintana-Roo","city":"Holbox","state":"Quintana Roo","n":616,"lat":21.52138,"lon":-87.38077,"price_mean":2810.3,"price_median":1470.16,"price_p10":720.5,"price_p25":989.2,"price_p75":2726.41,"price_p90":4725.64,"price_min":189.0,"price_max":62377.65,"rating_mean":4.679,"pct_rated":0.6964,"pct_new":0.0406,"pct_superhost":0.2597,"pct_favorite":0.1282,"hist":[5,12,54,92,82,73,70,54,41,51,25,23,6,28],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Playa-del-Carmen,-Quintana-Roo","city":"Playa del Carmen","state":"Quintana Roo","n":6895,"lat":20.64073,"lon":-87.07424,"price_mean":2374.02,"price_median":1461.42,"price_p10":711.08,"price_p25":1043.87,"price_p75":2291.42,"price_p90":4074.39,"price_min":239.74,"price_max":202227.63,"rating_mean":4.698,"pct_rated":0.5956,"pct_new":0.054,"pct_superhost":0.1394,"pct_favorite":0.1713,"hist":[21,187,568,792,1091,895,1204,618,377,421,226,244,92,159],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Tulum,-Quintana-Roo","city":"Tulum","state":"Quintana Roo","n":7033,"lat":20.19982,"lon":-87.46378,"price_mean":2955.28,"price_median":1459.72,"price_p10":755.55,"price_p25":992.5,"price_p75":2495.1,"price_p90":4551.03,"price_min":170.0,"price_max":232956.72,"rating_mean":4.751,"pct_rated":0.5901,"pct_new":0.0442,"pct_superhost":0.2244,"pct_favorite":0.1483,"hist":[9,130,538,1121,1072,748,1068,595,440,481,233,258,97,243],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Patzcuaro,-Michoacan","city":"Pátzcuaro","state":"Michoacán","n":251,"lat":19.53833,"lon":-101.6145,"price_mean":1926.28,"price_median":1396.52,"price_p10":527.0,"price_p25":849.55,"price_p75":2132.75,"price_p90":3388.0,"price_min":234.0,"price_max":43770.18,"rating_mean":4.766,"pct_rated":0.49,"pct_new":0.0518,"pct_superhost":0.2789,"pct_favorite":0.1155,"hist":[2,18,31,26,32,26,43,31,14,8,8,6,5,1],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Ciudad-Juarez,-Chihuahua","city":"Ciudad Juárez","state":"Chihuahua","n":1902,"lat":31.7166,"lon":-106.41408,"price_mean":1921.02,"price_median":1365.43,"price_p10":705.32,"price_p25":973.05,"price_p75":2094.78,"price_p90":3070.5,"price_min":261.85,"price_max":58258.09,"rating_mean":4.817,"pct_rated":0.7792,"pct_new":0.0552,"pct_superhost":0.1725,"pct_favorite":0.3796,"hist":[0,25,185,318,293,239,318,221,98,99,28,42,12,24],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Leon,-Guanajuato","city":"León","state":"Guanajuato","n":1461,"lat":21.12828,"lon":-101.66288,"price_mean":2022.67,"price_median":1301.09,"price_p10":581.88,"price_p25":828.0,"price_p75":2254.1,"price_p90":3927.7,"price_min":288.0,"price_max":136562.98,"rating_mean":4.77,"pct_rated":0.7064,"pct_new":0.0753,"pct_superhost":0.1588,"pct_favorite":0.2806,"hist":[0,110,181,227,175,156,191,145,57,84,81,29,8,17],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Mexicali,-Baja-California","city":"Mexicali","state":"Baja California","n":724,"lat":32.63043,"lon":-115.4317,"price_mean":1670.17,"price_median":1287.5,"price_p10":785.54,"price_p25":975.74,"price_p75":1807.38,"price_p90":2628.36,"price_min":350.0,"price_max":21295.74,"rating_mean":4.771,"pct_rated":0.7196,"pct_new":0.0649,"pct_superhost":0.145,"pct_favorite":0.3039,"hist":[0,10,48,145,143,91,146,57,27,23,16,10,2,6],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Monterrey,-Nuevo-Leon","city":"Monterrey","state":"Nuevo León","n":7003,"lat":25.69294,"lon":-100.28955,"price_mean":1859.97,"price_median":1280.14,"price_p10":673.1,"price_p25":890.28,"price_p75":1850.0,"price_p90":3072.08,"price_min":260.0,"price_max":116376.53,"rating_mean":4.791,"pct_rated":0.7471,"pct_new":0.0587,"pct_superhost":0.1809,"pct_favorite":0.3229,"hist":[0,201,840,1256,1052,906,1224,527,266,251,142,181,66,91],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Bacalar,-Quintana-Roo","city":"Bacalar","state":"Quintana Roo","n":993,"lat":18.67949,"lon":-88.39325,"price_mean":3050.4,"price_median":1263.29,"price_p10":629.28,"price_p25":825.0,"price_p75":2188.0,"price_p90":3705.62,"price_min":198.0,"price_max":1047388.79,"rating_mean":4.676,"pct_rated":0.6093,"pct_new":0.0564,"pct_superhost":0.1722,"pct_favorite":0.139,"hist":[6,36,139,174,131,92,110,112,49,58,28,28,10,20],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Oaxaca-de-Juarez,-Oaxaca","city":"Oaxaca de Juárez","state":"Oaxaca","n":4355,"lat":17.06781,"lon":-96.72267,"price_mean":1943.43,"price_median":1250.0,"price_p10":588.9,"price_p25":840.0,"price_p75":2050.0,"price_p90":3782.24,"price_min":232.75,"price_max":52500.0,"rating_mean":4.774,"pct_rated":0.6599,"pct_new":0.0641,"pct_superhost":0.1773,"pct_favorite":0.234,"hist":[3,237,583,707,640,474,577,309,186,236,142,141,55,65],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Veracruz,-Veracruz","city":"Veracruz","state":"Veracruz","n":2221,"lat":19.15593,"lon":-96.138,"price_mean":1706.87,"price_median":1245.5,"price_p10":625.0,"price_p25":817.5,"price_p75":1745.64,"price_p90":2752.5,"price_min":220.0,"price_max":104797.07,"rating_mean":4.754,"pct_rated":0.7924,"pct_new":0.0477,"pct_superhost":0.1977,"pct_favorite":0.2792,"hist":[2,75,380,343,313,340,366,132,78,74,47,41,14,16],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Merida,-Yucatan","city":"Mérida","state":"Yucatán","n":4578,"lat":20.9923,"lon":-89.6239,"price_mean":1933.35,"price_median":1221.95,"price_p10":594.88,"price_p25":814.63,"price_p75":1978.06,"price_p90":3364.73,"price_min":200.0,"price_max":109980.0,"rating_mean":4.76,"pct_rated":0.6855,"pct_new":0.0457,"pct_superhost":0.1806,"pct_favorite":0.2571,"hist":[4,208,665,866,595,500,612,343,201,266,107,110,45,56],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Guanajuato,-Guanajuato","city":"Guanajuato","state":"Guanajuato","n":1447,"lat":21.01541,"lon":-101.25614,"price_mean":1877.41,"price_median":1169.59,"price_p10":534.75,"price_p25":758.72,"price_p75":1925.0,"price_p90":3083.19,"price_min":266.85,"price_max":104738.88,"rating_mean":4.769,"pct_rated":0.7768,"pct_new":0.0359,"pct_superhost":0.2046,"pct_favorite":0.2909,"hist":[0,112,231,252,180,136,205,124,52,55,29,43,10,18],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Guadalajara,-Jalisco","city":"Guadalajara","state":"Jalisco","n":9468,"lat":20.67298,"lon":-103.37087,"price_mean":1785.27,"price_median":1163.5,"price_p10":576.37,"price_p25":797.18,"price_p75":1698.0,"price_p90":2624.5,"price_min":173.25,"price_max":905266.28,"rating_mean":4.766,"pct_rated":0.7651,"pct_new":0.0565,"pct_superhost":0.2255,"pct_favorite":0.3144,"hist":[51,540,1415,1670,1550,1184,1403,609,291,278,147,175,80,75],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Aguascalientes,-Aguascalientes","city":"Aguascalientes","state":"Aguascalientes","n":1891,"lat":21.8824,"lon":-102.30018,"price_mean":1743.68,"price_median":1112.0,"price_p10":465.5,"price_p25":703.0,"price_p75":1768.34,"price_p90":3258.54,"price_min":180.9,"price_max":50041.91,"rating_mean":4.771,"pct_rated":0.6885,"pct_new":0.0317,"pct_superhost":0.1423,"pct_favorite":0.2972,"hist":[30,229,256,317,266,155,237,112,81,75,47,46,16,24],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Morelia,-Michoacan","city":"Morelia","state":"Michoacán","n":544,"lat":19.6844,"lon":-101.18629,"price_mean":1818.01,"price_median":1111.0,"price_p10":505.42,"price_p25":733.42,"price_p75":1892.5,"price_p90":3099.04,"price_min":251.59,"price_max":104738.88,"rating_mean":4.762,"pct_rated":0.6268,"pct_new":0.0699,"pct_superhost":0.2188,"pct_favorite":0.239,"hist":[0,51,90,91,79,46,65,35,29,25,13,10,6,4],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Campeche,-Campeche","city":"Campeche","state":"Campeche","n":712,"lat":19.84005,"lon":-90.53239,"price_mean":1647.11,"price_median":1062.81,"price_p10":574.5,"price_p25":709.25,"price_p75":1659.25,"price_p90":3335.25,"price_min":261.85,"price_max":25000.0,"rating_mean":4.75,"pct_rated":0.7205,"pct_new":0.0337,"pct_superhost":0.1713,"pct_favorite":0.2978,"hist":[0,40,160,133,83,94,55,35,25,36,20,18,7,6],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Pachuca,-Hidalgo","city":"Pachuca","state":"Hidalgo","n":918,"lat":20.1044,"lon":-98.73946,"price_mean":1534.28,"price_median":1047.39,"price_p10":469.4,"price_p25":696.25,"price_p75":1745.64,"price_p90":2927.0,"price_min":220.0,"price_max":23670.99,"rating_mean":4.753,"pct_rated":0.7081,"pct_new":0.0545,"pct_superhost":0.2353,"pct_favorite":0.244,"hist":[6,112,158,153,110,75,125,49,42,38,16,23,6,5],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Colima,-Colima","city":"Colima","state":"Colima","n":557,"lat":19.26577,"lon":-103.72811,"price_mean":1710.69,"price_median":1047.0,"price_p10":557.16,"price_p25":750.0,"price_p75":1513.6,"price_p90":2930.21,"price_min":170.0,"price_max":90568.26,"rating_mean":4.806,"pct_rated":0.7576,"pct_new":0.0503,"pct_superhost":0.1706,"pct_favorite":0.3914,"hist":[2,30,107,125,89,58,54,21,16,19,12,9,10,5],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Saltillo,-Coahuila","city":"Saltillo","state":"Coahuila","n":857,"lat":25.43934,"lon":-100.97514,"price_mean":1478.69,"price_median":1046.22,"price_p10":590.0,"price_p25":810.0,"price_p75":1512.89,"price_p90":2243.52,"price_min":226.94,"price_max":70145.96,"rating_mean":4.788,"pct_rated":0.734,"pct_new":0.0583,"pct_superhost":0.1914,"pct_favorite":0.3314,"hist":[1,51,109,231,144,101,104,55,25,14,8,7,1,6],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Puebla,-Puebla","city":"Puebla","state":"Puebla","n":3562,"lat":19.05778,"lon":-98.24323,"price_mean":1615.12,"price_median":1033.35,"price_p10":451.0,"price_p25":689.25,"price_p75":1589.75,"price_p90":2635.23,"price_min":155.7,"price_max":190250.0,"rating_mean":4.753,"pct_rated":0.7302,"pct_new":0.0542,"pct_superhost":0.1583,"pct_favorite":0.3105,"hist":[23,428,617,639,525,342,365,224,120,113,60,64,19,23],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Chihuahua,-Chihuahua","city":"Chihuahua","state":"Chihuahua","n":1099,"lat":28.65603,"lon":-106.09683,"price_mean":1456.37,"price_median":1025.0,"price_p10":599.8,"price_p25":761.0,"price_p75":1484.5,"price_p90":2264.72,"price_min":232.75,"price_max":25000.0,"rating_mean":4.798,"pct_rated":0.7734,"pct_new":0.0701,"pct_superhost":0.1774,"pct_favorite":0.3676,"hist":[2,38,209,264,212,105,127,49,24,20,17,17,5,10],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Hermosillo,-Sonora","city":"Hermosillo","state":"Sonora","n":1296,"lat":29.09172,"lon":-110.97923,"price_mean":2282.41,"price_median":1025.0,"price_p10":555.75,"price_p25":726.19,"price_p75":1522.65,"price_p90":2327.53,"price_min":287.5,"price_max":1168816.0,"rating_mean":4.82,"pct_rated":0.7901,"pct_new":0.064,"pct_superhost":0.1397,"pct_favorite":0.4167,"hist":[0,58,284,282,195,137,163,70,41,29,18,11,0,8],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Culiacan--Sinaloa--Mexico","city":"Culiacán","state":"Sinaloa","n":761,"lat":24.80661,"lon":-107.40416,"price_mean":1332.02,"price_median":996.5,"price_p10":513.5,"price_p25":678.61,"price_p75":1395.36,"price_p90":2107.5,"price_min":305.38,"price_max":29478.0,"rating_mean":4.842,"pct_rated":0.6531,"pct_new":0.046,"pct_superhost":0.1695,"pct_favorite":0.3377,"hist":[0,68,163,152,132,86,73,22,24,16,10,7,2,6],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Torreon,-Coahuila","city":"Torreón","state":"Coahuila","n":848,"lat":25.55592,"lon":-103.40457,"price_mean":1295.46,"price_median":989.75,"price_p10":523.7,"price_p25":645.5,"price_p75":1485.25,"price_p90":2112.5,"price_min":250.21,"price_max":13965.18,"rating_mean":4.794,"pct_rated":0.7111,"pct_new":0.0649,"pct_superhost":0.1474,"pct_favorite":0.355,"hist":[0,67,215,149,114,96,106,42,11,15,10,17,5,1],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Queretaro,-Queretaro","city":"Querétaro","state":"Querétaro","n":3669,"lat":20.60331,"lon":-100.385,"price_mean":1319.56,"price_median":985.5,"price_p10":523.7,"price_p25":696.5,"price_p75":1505.0,"price_p90":2194.0,"price_min":204.24,"price_max":37240.49,"rating_mean":4.755,"pct_rated":0.7629,"pct_new":0.0643,"pct_superhost":0.233,"pct_favorite":0.2974,"hist":[4,304,855,727,447,400,468,175,95,105,24,37,14,14],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"San-Luis-Potosi,-San-Luis-Potosi","city":"San Luis Potosí","state":"San Luis Potosí","n":1468,"lat":22.14238,"lon":-100.96537,"price_mean":1249.66,"price_median":950.5,"price_p10":468.29,"price_p25":675.0,"price_p75":1361.61,"price_p90":1910.33,"price_min":220.5,"price_max":16234.0,"rating_mean":4.776,"pct_rated":0.75,"pct_new":0.0688,"pct_superhost":0.173,"pct_favorite":0.3549,"hist":[7,163,281,341,213,192,136,45,25,21,10,18,7,9],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Tepic,-Nayarit","city":"Tepic","state":"Nayarit","n":389,"lat":21.49743,"lon":-104.87713,"price_mean":1076.43,"price_median":948.5,"price_p10":547.11,"price_p25":685.0,"price_p75":1258.0,"price_p90":1721.13,"price_min":223.94,"price_max":6765.55,"rating_mean":4.819,"pct_rated":0.7686,"pct_new":0.0437,"pct_superhost":0.2391,"pct_favorite":0.3753,"hist":[1,30,87,99,73,39,36,12,5,4,2,1,0,0],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Valladolid,-Yucatan","city":"Valladolid","state":"Yucatán","n":905,"lat":20.68931,"lon":-88.20284,"price_mean":1370.76,"price_median":938.0,"price_p10":515.0,"price_p25":673.0,"price_p75":1454.7,"price_p90":2428.2,"price_min":192.15,"price_max":18848.98,"rating_mean":4.751,"pct_rated":0.6751,"pct_new":0.053,"pct_superhost":0.1812,"pct_favorite":0.2464,"hist":[10,63,223,200,114,81,78,49,25,29,12,13,0,8],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"},{"slug":"Zacatecas,-Zacatecas","city":"Zacatecas","state":"Zacatecas","n":625,"lat":22.76793,"lon":-102.56135,"price_mean":1252.81,"price_median":937.0,"price_p10":523.7,"price_p25":693.0,"price_p75":1366.26,"price_p90":2102.71,"price_min":275.0,"price_max":10473.89,"rating_mean":4.756,"pct_rated":0.7792,"pct_new":0.0208,"pct_superhost":0.2144,"pct_favorite":0.2928,"hist":[0,49,135,159,101,51,56,24,16,15,7,10,0,2],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"San-Cristobal-de-las-Casas,-Chiapas","city":"San Cristóbal de las Casas","state":"Chiapas","n":1306,"lat":16.73448,"lon":-92.63882,"price_mean":1482.2,"price_median":904.24,"price_p10":407.31,"price_p25":579.62,"price_p75":1494.95,"price_p90":2676.66,"price_min":150.0,"price_max":81463.57,"rating_mean":4.762,"pct_rated":0.5926,"pct_new":0.0322,"pct_superhost":0.1822,"pct_favorite":0.2121,"hist":[19,225,250,243,145,99,111,64,46,35,22,23,10,14],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Durango,-Durango","city":"Durango","state":"Durango","n":628,"lat":24.02731,"lon":-104.6559,"price_mean":1103.07,"price_median":868.0,"price_p10":473.14,"price_p25":597.75,"price_p75":1249.15,"price_p90":1858.61,"price_min":281.2,"price_max":16965.19,"rating_mean":4.819,"pct_rated":0.8344,"pct_new":0.035,"pct_superhost":0.1975,"pct_favorite":0.4459,"hist":[0,79,165,129,99,49,53,15,19,11,6,2,0,1],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Tlaxcala--Tlaxcala--Mexico","city":"Tlaxcala","state":"Tlaxcala","n":326,"lat":19.31705,"lon":-98.23054,"price_mean":1281.9,"price_median":850.27,"price_p10":418.95,"price_p25":582.66,"price_p75":1324.38,"price_p90":2924.41,"price_min":202.03,"price_max":9947.0,"rating_mean":4.78,"pct_rated":0.5828,"pct_new":0.0491,"pct_superhost":0.1472,"pct_favorite":0.2638,"hist":[6,54,73,62,40,20,23,8,9,11,10,9,1,0],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Tuxtla-Gutierrez,-Chiapas","city":"Tuxtla Gutiérrez","state":"Chiapas","n":692,"lat":16.75417,"lon":-93.1206,"price_mean":1184.26,"price_median":814.63,"price_p10":470.0,"price_p25":579.51,"price_p75":1194.31,"price_p90":1896.8,"price_min":198.0,"price_max":75644.74,"rating_mean":4.739,"pct_rated":0.698,"pct_new":0.0434,"pct_superhost":0.2066,"pct_favorite":0.2312,"hist":[4,87,207,151,92,47,42,26,9,9,7,8,2,1],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-02"},{"slug":"Toluca,-Mexico","city":"Toluca","state":"Estado de México","n":997,"lat":19.28565,"lon":-99.62412,"price_mean":1020.87,"price_median":800.0,"price_p10":360.46,"price_p25":534.17,"price_p75":1083.5,"price_p90":1675.0,"price_min":197.96,"price_max":23275.31,"rating_mean":4.714,"pct_rated":0.7894,"pct_new":0.0461,"pct_superhost":0.1785,"pct_favorite":0.2728,"hist":[9,196,235,249,114,70,58,31,9,13,1,5,2,5],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-01"},{"slug":"Villahermosa,-Tabasco","city":"Villahermosa","state":"Tabasco","n":490,"lat":17.99161,"lon":-92.94189,"price_mean":1066.87,"price_median":791.11,"price_p10":526.35,"price_p25":625.8,"price_p75":1234.07,"price_p90":1804.41,"price_min":267.67,"price_max":15827.2,"rating_mean":4.669,"pct_rated":0.7286,"pct_new":0.0531,"pct_superhost":0.1878,"pct_favorite":0.1918,"hist":[0,39,176,108,46,38,41,25,9,3,1,2,1,1],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-13"},{"slug":"Xalapa,-Veracruz","city":"Xalapa","state":"Veracruz","n":411,"lat":19.53184,"lon":-96.90575,"price_mean":966.85,"price_median":761.0,"price_p10":415.0,"price_p25":530.5,"price_p75":1051.5,"price_p90":1675.5,"price_min":222.45,"price_max":6388.0,"rating_mean":4.804,"pct_rated":0.7567,"pct_new":0.0608,"pct_superhost":0.1144,"pct_favorite":0.4404,"hist":[1,83,115,99,35,24,25,9,9,6,2,3,0,0],"checkin":"2026-09-29","checkout":"2026-10-01","fecha_corrida":"2026-09-03"}]}
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var DATA = JSON.parse(document.getElementById('dashboard-data').textContent);
+  var NAT = DATA.national;
+  var CITIES = DATA.cities.slice();
+
+  var state = { metric: 'price_median', query: '' };
+
+  // ---------- formatting ----------
+  var fmtMoney = new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN', maximumFractionDigits:0 });
+  var fmtInt = new Intl.NumberFormat('es-MX');
+  function fmtPct(v){ if (v == null) return '—'; return (v*100).toFixed(1) + '%'; }
+  function fmtRating(v){ return v == null ? '—' : v.toFixed(2); }
+  function metricLabel(){ return state.metric === 'price_mean' ? 'Promedio' : 'Mediana'; }
+
+  // ---------- color ramp ----------
+  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function hexToRgb(hex){
+    hex = hex.replace('#','');
+    return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+  }
+  function rgbToHex(rgb){
+    return '#' + rgb.map(function(c){ return Math.round(Math.max(0,Math.min(255,c))).toString(16).padStart(2,'0'); }).join('');
+  }
+  function rampStops(){
+    return ['--price-1','--price-2','--price-3','--price-4','--price-5'].map(function(v){ return hexToRgb(cssVar(v)); });
+  }
+  function interpolateRamp(stops, t){
+    t = Math.max(0, Math.min(1, t));
+    var n = stops.length - 1;
+    var pos = t * n;
+    var i = Math.min(n - 1, Math.floor(pos));
+    var f = pos - i;
+    var a = stops[i], b = stops[i+1];
+    return rgbToHex([ a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f ]);
+  }
+
+  // ---------- tooltip ----------
+  var tip = document.getElementById('tooltip');
+  function showTip(evt, html){
+    tip.innerHTML = html;
+    tip.hidden = false;
+    moveTip(evt);
+  }
+  function moveTip(evt){
+    var x = evt.clientX, y = evt.clientY;
+    var pad = 14;
+    tip.style.left = Math.min(window.innerWidth - pad, Math.max(pad, x)) + 'px';
+    tip.style.top = Math.max(pad, y) + 'px';
+  }
+  function hideTip(){ tip.hidden = true; }
+
+  function matchesQuery(c){
+    if (!state.query) return true;
+    var q = state.query;
+    return c.city.toLowerCase().indexOf(q) !== -1 || c.state.toLowerCase().indexOf(q) !== -1;
+  }
+
+  // ---------- meta row ----------
+  function renderMeta(){
+    var el = document.getElementById('meta-row');
+    var items = [
+      [fmtInt.format(NAT.n_cities), 'Ciudades'],
+      [fmtInt.format(NAT.n_listings), 'Anuncios'],
+      [fmtMoney.format(NAT.price_median), 'Mediana nacional /noche'],
+      ['mar–jue · 2 noches', 'Estancia de referencia'],
+      ['excluye CDMX/ZMVM', 'Cobertura'],
+    ];
+    el.innerHTML = items.map(function(it){
+      return '<div class="meta-item"><span class="v">'+it[0]+'</span><span class="k">'+it[1]+'</span></div>';
+    }).join('');
+  }
+
+  // ---------- KPIs ----------
+  function renderKpis(){
+    var el = document.getElementById('kpis');
+    var maxCity = CITIES[0], minCity = CITIES[CITIES.length-1];
+    var tiles = [
+      { v: fmtMoney.format(NAT.price_median), l: 'Mediana nacional /noche', s: 'Promedio: '+fmtMoney.format(NAT.price_mean) },
+      { v: fmtMoney.format(NAT.price_p10)+' – '+fmtMoney.format(NAT.price_p90), l: 'Rango típico (p10–p90)', s: '80% de los anuncios cae aquí' },
+      { v: maxCity.city, l: 'Ciudad más cara', s: fmtMoney.format(maxCity.price_median)+' mediana/noche' },
+      { v: minCity.city, l: 'Ciudad más accesible', s: fmtMoney.format(minCity.price_median)+' mediana/noche' },
+      { v: fmtPct(NAT.pct_superhost), l: 'Anuncios de superanfitrión', s: 'del total nacional' },
+      { v: fmtPct(NAT.pct_rated), l: 'Anuncios con calificación', s: 'el resto son nuevos o sin reseñas' },
+    ];
+    el.innerHTML = tiles.map(function(t){
+      return '<div class="kpi"><span class="kpi-value">'+t.v+'</span><span class="kpi-label">'+t.l+'</span><span class="kpi-sub">'+t.s+'</span></div>';
+    }).join('');
+  }
+
+  // ---------- ranking ----------
+  function renderRanking(){
+    var el = document.getElementById('rank-list');
+    var sorted = CITIES.slice().sort(function(a,b){ return b[state.metric] - a[state.metric]; });
+    var max = sorted[0][state.metric];
+    el.innerHTML = sorted.map(function(c, i){
+      var pct = (c[state.metric] / max * 100).toFixed(1);
+      var hidden = matchesQuery(c) ? '' : ' hidden';
+      return '<div class="rank-row'+hidden+'" data-slug="'+c.slug+'">' +
+        '<span class="rank-rank">'+(i+1)+'</span>' +
+        '<span class="rank-name">'+c.city+' <span class="state">'+c.state+'</span></span>' +
+        '<span class="rank-track"><span class="rank-fill" style="width:'+pct+'%"></span></span>' +
+        '<span class="rank-value">'+fmtMoney.format(c[state.metric])+'</span>' +
+        '</div>';
+    }).join('');
+    Array.prototype.forEach.call(el.querySelectorAll('.rank-row'), function(row){
+      var c = CITIES.find(function(x){ return x.slug === row.dataset.slug; });
+      row.addEventListener('mouseenter', function(e){
+        showTip(e, '<b>'+c.city+', '+c.state+'</b>' +
+          metricLabel()+': '+fmtMoney.format(c[state.metric])+'<br>' +
+          fmtInt.format(c.n)+' anuncios · '+fmtRating(c.rating_mean)+'★ · '+fmtPct(c.pct_superhost)+' superanfitrión');
+      });
+      row.addEventListener('mousemove', moveTip);
+      row.addEventListener('mouseleave', hideTip);
+    });
+    document.getElementById('rank-empty').style.display =
+      sorted.every(function(c){ return !matchesQuery(c); }) ? 'block' : 'none';
+  }
+
+  // ---------- histogram ----------
+  function renderHistogram(){
+    var el = document.getElementById('hist-wrap');
+    var W = 900, H = 260, padL = 34, padR = 12, padT = 14, padB = 30;
+    var innerW = W - padL - padR, innerH = H - padT - padB;
+    var counts = NAT.hist, labels = NAT.hist_labels;
+    var maxC = Math.max.apply(null, counts);
+    var n = counts.length;
+    var bw = innerW / n;
+
+    var medianIdx = null;
+    for (var i = 0; i < NAT.hist_edges.length - 1; i++){
+      var lo = NAT.hist_edges[i], hi = NAT.hist_edges[i+1];
+      if (hi === null || (NAT.price_median >= lo && NAT.price_median < hi)) { medianIdx = i; break; }
+    }
+    var medianX = padL + (medianIdx + 0.5) * bw;
+
+    var gridLines = [0,0.25,0.5,0.75,1].map(function(f){
+      var y = padT + innerH * (1-f);
+      return '<line class="hist-grid" x1="'+padL+'" x2="'+(W-padR)+'" y1="'+y+'" y2="'+y+'"></line>';
+    }).join('');
+
+    var bars = counts.map(function(c, i){
+      var h = maxC ? (c / maxC) * innerH : 0;
+      var x = padL + i * bw + bw*0.12;
+      var y = padT + innerH - h;
+      var w = bw * 0.76;
+      return '<rect class="hist-bar" data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+Math.max(0,h).toFixed(1)+'" rx="2"></rect>';
+    }).join('');
+
+    var xlabels = labels.map(function(lab, i){
+      var x = padL + (i+0.5)*bw;
+      return '<text class="hist-axis-label" x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+lab+'</text>';
+    }).join('');
+
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Histograma de tarifas por noche">' +
+      gridLines + bars +
+      '<line class="hist-median-line" x1="'+medianX.toFixed(1)+'" x2="'+medianX.toFixed(1)+'" y1="'+padT+'" y2="'+(padT+innerH)+'"></line>' +
+      '<text class="hist-median-label" x="'+(medianX+6).toFixed(1)+'" y="'+(padT+12)+'">mediana</text>' +
+      xlabels +
+      '</svg>';
+    el.innerHTML = svg;
+
+    var svgEl = el.querySelector('svg');
+    Array.prototype.forEach.call(svgEl.querySelectorAll('.hist-bar'), function(bar){
+      var i = +bar.dataset.i;
+      bar.addEventListener('mouseenter', function(e){
+        var pct = (counts[i] / NAT.n_listings * 100).toFixed(1);
+        showTip(e, '<b>$'+labels[i]+' MXN</b>'+fmtInt.format(counts[i])+' anuncios · '+pct+'% del total');
+      });
+      bar.addEventListener('mousemove', moveTip);
+      bar.addEventListener('mouseleave', hideTip);
+    });
+
+    document.getElementById('dist-stats').innerHTML = [
+      [fmtMoney.format(NAT.price_p10), 'Percentil 10'],
+      [fmtMoney.format(NAT.price_median), 'Mediana'],
+      [fmtMoney.format(NAT.price_mean), 'Promedio'],
+      [fmtMoney.format(NAT.price_p90), 'Percentil 90'],
+    ].map(function(s){ return '<div class="dist-stat"><span class="v">'+s[0]+'</span><span class="k">'+s[1]+'</span></div>'; }).join('');
+  }
+
+  // ---------- geo scatter ----------
+  function renderGeo(){
+    var el = document.getElementById('geo-wrap');
+    var lats = CITIES.map(function(c){ return c.lat; });
+    var lons = CITIES.map(function(c){ return c.lon; });
+    var latMin = Math.min.apply(null, lats), latMax = Math.max.apply(null, lats);
+    var lonMin = Math.min.apply(null, lons), lonMax = Math.max.apply(null, lons);
+    var padDeg = 0.6;
+    latMin -= padDeg; latMax += padDeg; lonMin -= padDeg; lonMax += padDeg;
+    var meanLatRad = (latMin+latMax)/2 * Math.PI/180;
+    var lonSpanKm = (lonMax-lonMin) * 111.32 * Math.cos(meanLatRad);
+    var latSpanKm = (latMax-latMin) * 111.32;
+
+    var W = 620;
+    var H = Math.round(W * (latSpanKm/lonSpanKm));
+    H = Math.max(360, Math.min(720, H));
+    var pad = 18;
+
+    function px(lon){ return pad + (lon-lonMin)/(lonMax-lonMin) * (W-2*pad); }
+    function py(lat){ return pad + (1 - (lat-latMin)/(latMax-latMin)) * (H-2*pad); }
+
+    var ns = CITIES.map(function(c){ return c.n; });
+    var nMin = Math.sqrt(Math.min.apply(null, ns)), nMax = Math.sqrt(Math.max.apply(null, ns));
+    function radius(n){
+      var t = nMax > nMin ? (Math.sqrt(n)-nMin)/(nMax-nMin) : 0.5;
+      return 4 + t * 16;
+    }
+
+    var prices = CITIES.map(function(c){ return c[state.metric]; });
+    var pMin = Math.min.apply(null, prices), pMax = Math.max.apply(null, prices);
+    var stops = rampStops();
+    function colorFor(p){ return interpolateRamp(stops, (p-pMin)/(pMax-pMin)); }
+
+    // latitude gridlines every 4 degrees
+    var gridLat = [];
+    for (var g = Math.ceil(latMin/4)*4; g <= latMax; g += 4) gridLat.push(g);
+    var gridLines = gridLat.map(function(g){
+      var y = py(g);
+      return '<line class="hist-grid" x1="'+pad+'" x2="'+(W-pad)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'"></line>' +
+        '<text class="geo-label" x="'+(W-pad-2)+'" y="'+(y-3).toFixed(1)+'" text-anchor="end">'+g+'°N</text>';
+    }).join('');
+
+    var dots = CITIES.slice().sort(function(a,b){ return b.n - a.n; }).map(function(c){
+      var cx = px(c.lon), cy = py(c.lat), r = radius(c.n), fill = colorFor(c[state.metric]);
+      var dim = matchesQuery(c) ? '' : ' dim';
+      return '<circle class="geo-dot'+dim+'" data-slug="'+c.slug+'" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+fill+'"></circle>';
+    }).join('');
+
+    el.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Mapa de dispersión de ciudades">'+gridLines+dots+'</svg>';
+
+    var svgEl = el.querySelector('svg');
+    Array.prototype.forEach.call(svgEl.querySelectorAll('.geo-dot'), function(dot){
+      var c = CITIES.find(function(x){ return x.slug === dot.dataset.slug; });
+      dot.addEventListener('mouseenter', function(e){
+        showTip(e, '<b>'+c.city+', '+c.state+'</b>' +
+          metricLabel()+': '+fmtMoney.format(c[state.metric])+'<br>'+fmtInt.format(c.n)+' anuncios');
+      });
+      dot.addEventListener('mousemove', moveTip);
+      dot.addEventListener('mouseleave', hideTip);
+    });
+
+    document.getElementById('geo-legend-scale').innerHTML =
+      '<span>'+fmtMoney.format(pMin)+'</span><span>'+fmtMoney.format(pMax)+'</span>';
+
+    var demoR = [90, 1500, 3000].map(function(n){ return radius(n); });
+    var demoW = (demoR[2]*2)+8;
+    document.getElementById('geo-size-demo').innerHTML =
+      '<svg width="'+demoW+'" height="'+(demoR[2]*2+4)+'" viewBox="0 0 '+demoW+' '+(demoR[2]*2+4)+'">' +
+      demoR.map(function(r,i){ var cx = demoR[2]+4; return '<circle cx="'+cx+'" cy="'+(demoR[2]+2)+'" r="'+r.toFixed(1)+'" fill="none" stroke="var(--ink-3)"></circle>'; }).join('') +
+      '</svg>' +
+      '<span class="legend-label" style="font-size:11px">~90 · 1.5k · 3k</span>';
+  }
+
+  // ---------- table ----------
+  var tableSort = { key: 'price_median', dir: -1 };
+  function renderTable(){
+    var body = document.getElementById('city-table-body');
+    var rows = CITIES.slice().filter(matchesQuery).sort(function(a,b){
+      var k = tableSort.key, dir = tableSort.dir;
+      var av = a[k], bv = b[k];
+      if (typeof av === 'string') return av.localeCompare(bv) * dir;
+      if (av == null) av = -Infinity; if (bv == null) bv = -Infinity;
+      return (av - bv) * dir;
+    });
+    body.innerHTML = rows.map(function(c){
+      var sh = c.pct_superhost >= 0.25 ? '<span class="badge">'+fmtPct(c.pct_superhost)+'</span>' : fmtPct(c.pct_superhost);
+      return '<tr>' +
+        '<td>'+c.city+'</td>' +
+        '<td>'+c.state+'</td>' +
+        '<td class="num">'+fmtInt.format(c.n)+'</td>' +
+        '<td class="num">'+fmtMoney.format(c.price_median)+'</td>' +
+        '<td class="num">'+fmtMoney.format(c.price_mean)+'</td>' +
+        '<td class="num">'+fmtRating(c.rating_mean)+'</td>' +
+        '<td class="num">'+sh+'</td>' +
+        '</tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--ink-3);padding:22px">Sin resultados para esa búsqueda.</td></tr>';
+
+    Array.prototype.forEach.call(document.querySelectorAll('#city-table thead th'), function(th){
+      th.classList.toggle('sorted', th.dataset.key === tableSort.key);
+      var arrow = th.querySelector('.arrow');
+      if (th.dataset.key === tableSort.key) arrow.textContent = tableSort.dir === 1 ? '▴' : '▾';
+    });
+  }
+
+  document.querySelectorAll('#city-table thead th').forEach(function(th){
+    th.addEventListener('click', function(){
+      var key = th.dataset.key;
+      if (tableSort.key === key) tableSort.dir *= -1;
+      else { tableSort.key = key; tableSort.dir = th.dataset.type === 'str' ? 1 : -1; }
+      renderTable();
+    });
+  });
+
+  // ---------- footer status ----------
+  function renderFooterStatus(){
+    document.getElementById('footer-status').textContent =
+      DATA.generated_at + ': ' + NAT.n_cities + ' ciudades procesadas (Ronda 01) con ' +
+      fmtInt.format(NAT.n_listings) + ' anuncios. Falta integrar las ciudades recorridas por otras integrantes ' +
+      'del equipo; este panel se actualizará cuando se sumen.';
+  }
+
+  // ---------- wiring ----------
+  function renderAll(){
+    renderKpis();
+    renderRanking();
+    renderHistogram();
+    renderGeo();
+    renderTable();
+  }
+
+  document.getElementById('search').addEventListener('input', function(e){
+    state.query = e.target.value.trim().toLowerCase();
+    renderRanking();
+    renderTable();
+    renderGeo();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.segmented button'), function(btn){
+    btn.addEventListener('click', function(){
+      Array.prototype.forEach.call(document.querySelectorAll('.segmented button'), function(b){ b.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+      state.metric = btn.dataset.metric;
+      renderRanking();
+      renderGeo();
+    });
+  });
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', renderGeo);
+  new MutationObserver(renderGeo).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+  renderMeta();
+  renderFooterStatus();
+  renderAll();
+})();
+</script>
