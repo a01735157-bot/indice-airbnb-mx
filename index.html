@@ -284,7 +284,6 @@
 
   <footer>
     <p><b style="color:var(--ink-1)">Qué mide este panel.</b> El precio es la tarifa disponible en la búsqueda de Airbnb para una estancia de martes a jueves (2 noches), reservada 29 días antes de la llegada — no el precio de lista de todos los anuncios ni descuentos de última hora. La tarifa por noche se calcula dividiendo entre 2 el subtotal de hospedaje de la estancia. La unidad de análisis es la ciudad, acotada a su mancha urbana; se excluye la Zona Metropolitana del Valle de México por alcance del proyecto.</p>
-    <p><b style="color:var(--ink-1)">Estado de la base.</b> <span id="footer-status"><!-- JS --></span></p>
   </footer>
 
 </div>
@@ -590,13 +589,6 @@
     });
   });
 
-  // ---------- footer status ----------
-  function renderFooterStatus(){
-    document.getElementById('footer-status').textContent =
-      DATA.generated_at + ': ' + NAT.n_cities + ' ciudades procesadas (Ronda 01) con ' +
-      fmtInt.format(NAT.n_listings) + ' anuncios. Falta integrar las ciudades recorridas por otras integrantes ' +
-      'del equipo; este panel se actualizará cuando se sumen.';
-  }
 
   // ---------- wiring ----------
   function renderAll(){
@@ -629,7 +621,6 @@
   new MutationObserver(renderGeo).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
 
   renderMeta();
-  renderFooterStatus();
   renderAll();
 })();
 </script>
