@@ -41,7 +41,7 @@ a{ color:var(--coffee-ink); }
 .panel{
   position:absolute; top:14px; left:14px; z-index:500;
   background:var(--surface); border:2px solid var(--ink-1); border-radius:3px;
-  padding:14px 16px; width:250px; max-width:calc(100vw - 28px);
+  padding:14px 16px; width:280px; max-width:calc(100vw - 28px);
   box-shadow:0 6px 18px rgba(20,14,8,.15);
 }
 .panel h1{ font-size:15px; margin:0 0 4px; font-weight:700; }

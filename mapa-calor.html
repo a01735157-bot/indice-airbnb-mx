@@ -24,22 +24,27 @@
 
   <div class="panel">
     <h1>Mapa de calor por ciudad</h1>
-    <p class="panel-note">Dónde se concentran los anuncios más caros (rojo/café oscuro) frente a los más accesibles (beige) dentro de una misma ciudad.</p>
+    <p class="panel-note">La ciudad se divide en una cuadrícula; cada celda muestra la tarifa promedio de sus anuncios. Las celdas con pocos anuncios se ven más tenues.</p>
     <div class="field">
       <label>Ciudad</label>
       <select id="city-select"></select>
     </div>
+    <div class="field">
+      <label>Tarifa por noche</label>
+      <div class="legend-gradient"></div>
+      <div class="legend-scale" id="legend-scale"></div>
+    </div>
     <div class="field" id="stats-field" style="display:none">
       <div class="stat-row"><span>Anuncios en vista</span><span class="v mono" id="stat-n"></span></div>
       <div class="stat-row"><span>Mediana / noche</span><span class="v mono" id="stat-median"></span></div>
+      <div class="stat-row"><span>Celdas dibujadas</span><span class="v mono" id="stat-cells"></span></div>
     </div>
   </div>
 
-  <div class="map-footer-note">La intensidad pondera la concentración de anuncios por su tarifa relativa dentro de la ciudad seleccionada — no es densidad pura de anuncios.</div>
+  <div class="map-footer-note">Color = tarifa promedio por celda. Opacidad = cuántos anuncios respaldan esa celda (más tenue = menos datos).</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script src="assets/maps.js"></script>
 <script>
 (async function(){
@@ -55,32 +60,71 @@
     select.appendChild(opt);
   }
 
-  let heatLayer = null;
+  let gridLayer = null;
+  const TARGET_CELLS_ACROSS = 28;
+
+  function buildGrid(points){
+    const lats = points.map(p => p[0]), lons = points.map(p => p[1]);
+    const latMin = Math.min(...lats), latMax = Math.max(...lats);
+    const lonMin = Math.min(...lons), lonMax = Math.max(...lons);
+    const latSpan = Math.max(latMax - latMin, 0.001);
+    const lonSpan = Math.max(lonMax - lonMin, 0.001);
+    const cell = Math.max(latSpan, lonSpan) / TARGET_CELLS_ACROSS;
+
+    const cells = new Map();
+    for (const [lat, lon, price] of points){
+      const ix = Math.floor((lon - lonMin) / cell);
+      const iy = Math.floor((lat - latMin) / cell);
+      const key = ix + '_' + iy;
+      if (!cells.has(key)) cells.set(key, { ix, iy, prices: [] });
+      cells.get(key).prices.push(price);
+    }
+    return { cells: Array.from(cells.values()), cell, lonMin, latMin };
+  }
 
   async function loadCity(id){
     const meta = cities.find(c => c.id === id);
     const points = await (await fetch(`data/listings/${id}.json`)).json();
-    if (heatLayer) map.removeLayer(heatLayer);
+    if (gridLayer) map.removeLayer(gridLayer);
 
     const prices = points.map(p => p[2]).sort((a,b) => a-b);
     const lo = prices[Math.floor(prices.length * 0.05)] ?? prices[0];
     const hi = prices[Math.ceil(prices.length * 0.95) - 1] ?? prices[prices.length-1];
-    const heatPoints = points.map(([lat, lon, price]) => {
-      const t = Math.max(0, Math.min(1, (price - lo) / (hi - lo || 1)));
-      return [lat, lon, 0.15 + t * 0.85];
-    });
 
-    heatLayer = L.heatLayer(heatPoints, {
-      radius: 16, blur: 20, maxZoom: 17, max: 1.0,
-      gradient: { 0.0: '#d9b48a', 0.4: '#c08a52', 0.65: '#96602e', 0.85: '#6b3f1a', 1.0: '#45280f' },
-    }).addTo(map);
+    const { cells, cell, lonMin, latMin } = buildGrid(points);
+    const maxCount = Math.max(...cells.map(c => c.prices.length));
+
+    const rects = [];
+    for (const c of cells){
+      const avg = c.prices.reduce((a,b) => a+b, 0) / c.prices.length;
+      const t = Math.max(0, Math.min(1, (avg - lo) / (hi - lo || 1)));
+      const confidence = Math.min(1, c.prices.length / 8);
+      const opacity = 0.28 + confidence * 0.55;
+      const bounds = [
+        [latMin + c.iy * cell, lonMin + c.ix * cell],
+        [latMin + (c.iy+1) * cell, lonMin + (c.ix+1) * cell],
+      ];
+      const rect = L.rectangle(bounds, {
+        fillColor: interpolateRamp(t), fillOpacity: opacity,
+        stroke: false,
+      });
+      rect.bindTooltip(
+        `${fmtMoney.format(avg)} / noche promedio<br>${fmtInt.format(c.prices.length)} anuncio${c.prices.length===1?'':'s'}`,
+        { sticky: true }
+      );
+      rects.push(rect);
+    }
+    gridLayer = L.layerGroup(rects).addTo(map);
 
     const bounds = L.latLngBounds(points.map(p => [p[0], p[1]]));
     map.fitBounds(bounds, { padding: [30,30] });
 
+    document.getElementById('legend-scale').innerHTML =
+      `<span>${fmtMoney.format(lo)}</span><span>${fmtMoney.format(hi)}</span>`;
     document.getElementById('stats-field').style.display = 'block';
     document.getElementById('stat-n').textContent = fmtInt.format(points.length);
     document.getElementById('stat-median').textContent = fmtMoney.format(meta.price_median);
+    document.getElementById('stat-cells').textContent = fmtInt.format(cells.length);
   }
 
   select.addEventListener('change', () => loadCity(select.value));
