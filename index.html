@@ -341,10 +341,13 @@
   }
   function hideTip(){ tip.hidden = true; }
 
+  function normalize(s){
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
   function matchesQuery(c){
     if (!state.query) return true;
     var q = state.query;
-    return c.city.toLowerCase().indexOf(q) !== -1 || c.state.toLowerCase().indexOf(q) !== -1;
+    return normalize(c.city).indexOf(q) !== -1 || normalize(c.state).indexOf(q) !== -1;
   }
 
   // ---------- meta row ----------
