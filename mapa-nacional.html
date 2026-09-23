@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa nacional — Índice Airbnb México</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="assets/maps.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">Índice Airbnb México</a>
+  <nav>
+    <a href="index.html">Estadísticas</a>
+    <a href="mapa-nacional.html" class="active">Mapa nacional</a>
+    <a href="mapa-calor.html">Mapa de calor</a>
+    <a href="mapa-alcaldias.html">CDMX por alcaldía</a>
+  </nav>
+</div>
+
+<div class="map-shell">
+  <div id="map"></div>
+
+  <div class="panel">
+    <h1>Mapa nacional</h1>
+    <p class="panel-note">Cada círculo es una ciudad. Tamaño = número de anuncios. Color = tarifa por noche.</p>
+    <div class="field">
+      <label>Métrica de color</label>
+      <div class="segmented" role="group">
+        <button type="button" data-metric="price_median" aria-pressed="true">Mediana</button>
+        <button type="button" data-metric="price_mean" aria-pressed="false">Promedio</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tarifa por noche</label>
+      <div class="legend-gradient"></div>
+      <div class="legend-scale" id="legend-scale"></div>
+    </div>
+  </div>
+
+  <div class="map-footer-note">Base: OpenStreetMap / CARTO. Datos: Ronda 01, 60 ciudades (excluye ZMVM fuera de CDMX).</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/maps.js"></script>
+<script>
+(async function(){
+  const cities = await (await fetch('data/cities.json')).json();
+  const map = baseMap('map', [23.5, -102], 5);
+
+  let metric = 'price_median';
+  const prices = () => cities.map(c => c[metric]);
+  let pMin = Math.min(...prices()), pMax = Math.max(...prices());
+
+  const nVals = cities.map(c => Math.sqrt(c.n));
+  const nMin = Math.min(...nVals), nMax = Math.max(...nVals);
+  function radius(n){
+    const t = (Math.sqrt(n) - nMin) / (nMax - nMin || 1);
+    return 5 + t * 24;
+  }
+
+  let markers = [];
+  function render(){
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    pMin = Math.min(...prices()); pMax = Math.max(...prices());
+    document.getElementById('legend-scale').innerHTML =
+      `<span>${fmtMoney.format(pMin)}</span><span>${fmtMoney.format(pMax)}</span>`;
+
+    const sorted = cities.slice().sort((a,b) => b.n - a.n);
+    for (const c of sorted){
+      const t = (c[metric] - pMin) / (pMax - pMin || 1);
+      const marker = L.circleMarker([c.lat, c.lon], {
+        radius: radius(c.n),
+        color: '#2b1d12', weight: 1,
+        fillColor: interpolateRamp(t), fillOpacity: 0.85,
+      }).addTo(map);
+
+      marker.bindPopup(
+        `<p class="popup-title">${c.city}</p>` +
+        `<p class="popup-sub">${c.state}</p>` +
+        `<div class="popup-row"><span>Mediana / noche</span><span class="v mono">${fmtMoney.format(c.price_median)}</span></div>` +
+        `<div class="popup-row"><span>Promedio / noche</span><span class="v mono">${fmtMoney.format(c.price_mean)}</span></div>` +
+        `<div class="popup-row"><span>Anuncios</span><span class="v mono">${fmtInt.format(c.n)}</span></div>` +
+        `<div class="popup-row"><span>Calificación</span><span class="v mono">${fmtRating(c.rating_mean)}</span></div>` +
+        `<div class="popup-row"><span>% Superanfitrión</span><span class="v mono">${fmtPct(c.pct_superhost)}</span></div>`
+      );
+      markers.push(marker);
+    }
+  }
+  render();
+
+  document.querySelectorAll('.segmented button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.segmented button').forEach(b => b.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      metric = btn.dataset.metric;
+      render();
+    });
+  });
+})();
+</script>
+</body>
+</html>

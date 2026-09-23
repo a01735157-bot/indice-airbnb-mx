@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CDMX por alcaldía — Índice Airbnb México</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="assets/maps.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">Índice Airbnb México</a>
+  <nav>
+    <a href="index.html">Estadísticas</a>
+    <a href="mapa-nacional.html">Mapa nacional</a>
+    <a href="mapa-calor.html">Mapa de calor</a>
+    <a href="mapa-alcaldias.html" class="active">CDMX por alcaldía</a>
+  </nav>
+</div>
+
+<div class="map-shell">
+  <div id="map"></div>
+
+  <div class="panel">
+    <h1>CDMX por alcaldía</h1>
+    <p class="panel-note">Tarifa por noche, asignada por coordenadas al Marco Geoestadístico de INEGI 2020.</p>
+    <div class="field">
+      <label>Métrica de color</label>
+      <div class="segmented" role="group">
+        <button type="button" data-metric="price_median" aria-pressed="true">Mediana</button>
+        <button type="button" data-metric="price_mean" aria-pressed="false">Promedio</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tarifa por noche</label>
+      <div class="legend-gradient"></div>
+      <div class="legend-scale" id="legend-scale"></div>
+    </div>
+    <div class="field" id="hover-field" style="display:none">
+      <div class="stat-row"><span id="hover-name"></span><span></span></div>
+      <div class="stat-row"><span>Anuncios</span><span class="v mono" id="hover-n"></span></div>
+      <div class="stat-row"><span>Mediana / noche</span><span class="v mono" id="hover-median"></span></div>
+      <div class="stat-row"><span>Promedio / noche</span><span class="v mono" id="hover-mean"></span></div>
+    </div>
+  </div>
+
+  <div class="map-footer-note">4.4% de los anuncios de la corrida de CDMX cayó fuera de sus 16 alcaldías (borde con el Edo. de México) y se excluyó de este mapa.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/maps.js"></script>
+<script>
+(async function(){
+  const geo = await (await fetch('data/alcaldias.geojson')).json();
+  const map = baseMap('map', [19.35, -99.13], 10);
+
+  let metric = 'price_median';
+  const values = () => geo.features.map(f => f.properties[metric]).filter(v => v != null);
+  let vMin = Math.min(...values()), vMax = Math.max(...values());
+
+  function styleFor(feature){
+    const v = feature.properties[metric];
+    const t = v == null ? 0 : (v - vMin) / (vMax - vMin || 1);
+    return {
+      fillColor: v == null ? '#cfc6b8' : interpolateRamp(t),
+      fillOpacity: 0.82,
+      color: '#2b1d12', weight: 1.4,
+    };
+  }
+
+  const hoverField = document.getElementById('hover-field');
+  let layer = L.geoJSON(geo, {
+    style: styleFor,
+    onEachFeature: (feature, lyr) => {
+      lyr.on('mouseover', () => {
+        lyr.setStyle({ weight: 3 });
+        const p = feature.properties;
+        hoverField.style.display = 'block';
+        document.getElementById('hover-name').textContent = p.nombre;
+        document.getElementById('hover-n').textContent = fmtInt.format(p.n || 0);
+        document.getElementById('hover-median').textContent = p.price_median != null ? fmtMoney.format(p.price_median) : '—';
+        document.getElementById('hover-mean').textContent = p.price_mean != null ? fmtMoney.format(p.price_mean) : '—';
+      });
+      lyr.on('mouseout', () => lyr.setStyle(styleFor(feature)));
+      lyr.bindTooltip(feature.properties.nombre, { sticky: true });
+    },
+  }).addTo(map);
+
+  function render(){
+    vMin = Math.min(...values()); vMax = Math.max(...values());
+    layer.setStyle(styleFor);
+    document.getElementById('legend-scale').innerHTML =
+      `<span>${fmtMoney.format(vMin)}</span><span>${fmtMoney.format(vMax)}</span>`;
+  }
+  render();
+
+  document.querySelectorAll('.segmented button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.segmented button').forEach(b => b.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true');
+      metric = btn.dataset.metric;
+      render();
+    });
+  });
+})();
+</script>
+</body>
+</html>

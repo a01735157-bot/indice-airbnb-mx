@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de calor — Índice Airbnb México</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="assets/maps.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">Índice Airbnb México</a>
+  <nav>
+    <a href="index.html">Estadísticas</a>
+    <a href="mapa-nacional.html">Mapa nacional</a>
+    <a href="mapa-calor.html" class="active">Mapa de calor</a>
+    <a href="mapa-alcaldias.html">CDMX por alcaldía</a>
+  </nav>
+</div>
+
+<div class="map-shell">
+  <div id="map"></div>
+
+  <div class="panel">
+    <h1>Mapa de calor por ciudad</h1>
+    <p class="panel-note">Dónde se concentran los anuncios más caros (rojo/café oscuro) frente a los más accesibles (beige) dentro de una misma ciudad.</p>
+    <div class="field">
+      <label>Ciudad</label>
+      <select id="city-select"></select>
+    </div>
+    <div class="field" id="stats-field" style="display:none">
+      <div class="stat-row"><span>Anuncios en vista</span><span class="v mono" id="stat-n"></span></div>
+      <div class="stat-row"><span>Mediana / noche</span><span class="v mono" id="stat-median"></span></div>
+    </div>
+  </div>
+
+  <div class="map-footer-note">La intensidad pondera la concentración de anuncios por su tarifa relativa dentro de la ciudad seleccionada — no es densidad pura de anuncios.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="assets/maps.js"></script>
+<script>
+(async function(){
+  const cities = await (await fetch('data/cities.json')).json();
+  const map = baseMap('map', [23.5, -102], 5);
+
+  const select = document.getElementById('city-select');
+  const sorted = cities.slice().sort((a,b) => a.city.localeCompare(b.city));
+  for (const c of sorted){
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = `${c.city}, ${c.state}`;
+    select.appendChild(opt);
+  }
+
+  let heatLayer = null;
+
+  async function loadCity(id){
+    const meta = cities.find(c => c.id === id);
+    const points = await (await fetch(`data/listings/${id}.json`)).json();
+    if (heatLayer) map.removeLayer(heatLayer);
+
+    const prices = points.map(p => p[2]).sort((a,b) => a-b);
+    const lo = prices[Math.floor(prices.length * 0.05)] ?? prices[0];
+    const hi = prices[Math.ceil(prices.length * 0.95) - 1] ?? prices[prices.length-1];
+    const heatPoints = points.map(([lat, lon, price]) => {
+      const t = Math.max(0, Math.min(1, (price - lo) / (hi - lo || 1)));
+      return [lat, lon, 0.15 + t * 0.85];
+    });
+
+    heatLayer = L.heatLayer(heatPoints, {
+      radius: 16, blur: 20, maxZoom: 17, max: 1.0,
+      gradient: { 0.0: '#d9b48a', 0.4: '#c08a52', 0.65: '#96602e', 0.85: '#6b3f1a', 1.0: '#45280f' },
+    }).addTo(map);
+
+    const bounds = L.latLngBounds(points.map(p => [p[0], p[1]]));
+    map.fitBounds(bounds, { padding: [30,30] });
+
+    document.getElementById('stats-field').style.display = 'block';
+    document.getElementById('stat-n').textContent = fmtInt.format(points.length);
+    document.getElementById('stat-median').textContent = fmtMoney.format(meta.price_median);
+  }
+
+  select.addEventListener('change', () => loadCity(select.value));
+
+  const initial = sorted.find(c => c.id === 'ciudad-de-mexico-ciudad-de-mexico') || sorted[0];
+  select.value = initial.id;
+  loadCity(initial.id);
+})();
+</script>
+</body>
+</html>

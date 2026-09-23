@@ -148,19 +148,16 @@
   .dist-stat .v{ font-family:"Space Mono",monospace; font-size:1.05rem; font-weight:700; }
   .dist-stat .k{ font-size:11px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; }
 
-  /* ---------- geo ---------- */
-  .geo-layout{ display:grid; grid-template-columns:1fr 200px; gap:20px; }
-  @media (max-width:720px){ .geo-layout{ grid-template-columns:1fr; } }
-  .geo-wrap svg{ width:100%; height:auto; display:block; }
-  .geo-dot{ stroke:var(--surface); stroke-width:1; cursor:pointer; }
-  .geo-dot.dim{ opacity:.15; }
-  .geo-label{ font-size:9px; fill:var(--ink-3); font-family:"Space Mono",monospace; }
-  .geo-legend{ display:flex; flex-direction:column; gap:14px; padding-top:4px; }
-  .legend-gradient{ height:10px; border:1px solid var(--ink-1); background:linear-gradient(90deg, var(--price-1), var(--price-2), var(--price-3), var(--price-4), var(--price-5)); }
-  .legend-scale{ display:flex; justify-content:space-between; font-size:11px; color:var(--ink-3); margin-top:4px; }
-  .legend-label{ font-size:11.5px; color:var(--ink-2); font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
-  .geo-size-demo{ display:flex; align-items:center; gap:10px; }
-  .geo-size-demo svg{ flex:none; }
+  /* ---------- mapas (enlaces) ---------- */
+  .map-links{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:2px; background:var(--ink-1); border:2px solid var(--ink-1); }
+  .map-link-card{
+    background:var(--surface); padding:18px 16px; display:flex; flex-direction:column; gap:6px;
+    text-decoration:none; color:var(--ink-1);
+  }
+  .map-link-card:hover{ background:var(--surface-2); }
+  .map-link-title{ font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:1.05rem; }
+  .map-link-title::after{ content:" →"; color:var(--coffee-ink); }
+  .map-link-desc{ font-size:12.5px; color:var(--ink-2); line-height:1.45; }
 
   /* ---------- table ---------- */
   .table-wrap{ overflow-x:auto; }
@@ -194,7 +191,26 @@
   .tooltip b{ display:block; font-size:13px; margin-bottom:2px; font-family:"Space Mono",monospace; }
   .tooltip[hidden]{ display:none; }
   .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+
+  /* ---------- site nav ---------- */
+  .sitenav{
+    display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+    padding:10px 20px; background:var(--surface); border-bottom:2px solid var(--ink-1);
+  }
+  .sitenav a{
+    font-size:13px; font-weight:600; text-decoration:none; color:var(--ink-2);
+    padding:6px 10px; border-radius:2px; border:1px solid transparent;
+  }
+  .sitenav a:hover{ color:var(--ink-1); background:var(--surface-2); }
+  .sitenav a.active{ color:var(--ink-1); border-color:var(--ink-1); background:var(--surface-2); }
 </style>
+
+<nav class="sitenav" aria-label="Secciones del sitio">
+  <a href="index.html" class="active">Estadísticas</a>
+  <a href="mapa-nacional.html">Mapa nacional</a>
+  <a href="mapa-calor.html">Mapa de calor</a>
+  <a href="mapa-alcaldias.html">CDMX por alcaldía</a>
+</nav>
 
 <div class="band-brand">
   <div class="page">
@@ -242,22 +258,22 @@
       </div>
     </section>
 
-    <section class="panel" id="geo">
-      <div class="panel-head"><span class="section-num">03</span><h2>Dispersión geográfica</h2></div>
-      <p class="panel-note">Cada punto es una ciudad, ubicada por su centroide de anuncios (proyección equirectangular corregida por latitud media). El tamaño indica el número de anuncios; el color, la tarifa.</p>
-      <div class="card geo-layout">
-        <div class="geo-wrap" id="geo-wrap"><!-- JS --></div>
-        <div class="geo-legend">
-          <div>
-            <span class="legend-label">Tarifa por noche</span>
-            <div class="legend-gradient"></div>
-            <div class="legend-scale" id="geo-legend-scale"><!-- JS --></div>
-          </div>
-          <div>
-            <span class="legend-label">Anuncios en la ciudad</span>
-            <div class="geo-size-demo" id="geo-size-demo"><!-- JS --></div>
-          </div>
-        </div>
+    <section class="panel" id="mapas">
+      <div class="panel-head"><span class="section-num">03</span><h2>Mapas interactivos</h2></div>
+      <p class="panel-note">Con zoom, capas reales y detalle por anuncio — cada uno vive en su propia página.</p>
+      <div class="map-links">
+        <a class="map-link-card" href="mapa-nacional.html">
+          <span class="map-link-title">Mapa nacional</span>
+          <span class="map-link-desc">Las 60 ciudades por tarifa y número de anuncios, sobre un mapa real de México.</span>
+        </a>
+        <a class="map-link-card" href="mapa-calor.html">
+          <span class="map-link-title">Mapa de calor por ciudad</span>
+          <span class="map-link-desc">Elige una ciudad y ve en qué zonas se concentran los precios altos y bajos.</span>
+        </a>
+        <a class="map-link-card" href="mapa-alcaldias.html">
+          <span class="map-link-title">CDMX por alcaldía</span>
+          <span class="map-link-desc">Tarifa mediana en las 16 alcaldías, asignada por coordenadas contra INEGI.</span>
+        </a>
       </div>
     </section>
 
@@ -309,28 +325,6 @@
   function fmtPct(v){ if (v == null) return '—'; return (v*100).toFixed(1) + '%'; }
   function fmtRating(v){ return v == null ? '—' : v.toFixed(2); }
   function metricLabel(){ return state.metric === 'price_mean' ? 'Promedio' : 'Mediana'; }
-
-  // ---------- color ramp ----------
-  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-  function hexToRgb(hex){
-    hex = hex.replace('#','');
-    return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
-  }
-  function rgbToHex(rgb){
-    return '#' + rgb.map(function(c){ return Math.round(Math.max(0,Math.min(255,c))).toString(16).padStart(2,'0'); }).join('');
-  }
-  function rampStops(){
-    return ['--price-1','--price-2','--price-3','--price-4','--price-5'].map(function(v){ return hexToRgb(cssVar(v)); });
-  }
-  function interpolateRamp(stops, t){
-    t = Math.max(0, Math.min(1, t));
-    var n = stops.length - 1;
-    var pos = t * n;
-    var i = Math.min(n - 1, Math.floor(pos));
-    var f = pos - i;
-    var a = stops[i], b = stops[i+1];
-    return rgbToHex([ a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f ]);
-  }
 
   // ---------- tooltip ----------
   var tip = document.getElementById('tooltip');
@@ -477,78 +471,6 @@
   }
 
   // ---------- geo scatter ----------
-  function renderGeo(){
-    var el = document.getElementById('geo-wrap');
-    var lats = CITIES.map(function(c){ return c.lat; });
-    var lons = CITIES.map(function(c){ return c.lon; });
-    var latMin = Math.min.apply(null, lats), latMax = Math.max.apply(null, lats);
-    var lonMin = Math.min.apply(null, lons), lonMax = Math.max.apply(null, lons);
-    var padDeg = 0.6;
-    latMin -= padDeg; latMax += padDeg; lonMin -= padDeg; lonMax += padDeg;
-    var meanLatRad = (latMin+latMax)/2 * Math.PI/180;
-    var lonSpanKm = (lonMax-lonMin) * 111.32 * Math.cos(meanLatRad);
-    var latSpanKm = (latMax-latMin) * 111.32;
-
-    var W = 620;
-    var H = Math.round(W * (latSpanKm/lonSpanKm));
-    H = Math.max(360, Math.min(720, H));
-    var pad = 18;
-
-    function px(lon){ return pad + (lon-lonMin)/(lonMax-lonMin) * (W-2*pad); }
-    function py(lat){ return pad + (1 - (lat-latMin)/(latMax-latMin)) * (H-2*pad); }
-
-    var ns = CITIES.map(function(c){ return c.n; });
-    var nMin = Math.sqrt(Math.min.apply(null, ns)), nMax = Math.sqrt(Math.max.apply(null, ns));
-    function radius(n){
-      var t = nMax > nMin ? (Math.sqrt(n)-nMin)/(nMax-nMin) : 0.5;
-      return 4 + t * 16;
-    }
-
-    var prices = CITIES.map(function(c){ return c[state.metric]; });
-    var pMin = Math.min.apply(null, prices), pMax = Math.max.apply(null, prices);
-    var stops = rampStops();
-    function colorFor(p){ return interpolateRamp(stops, (p-pMin)/(pMax-pMin)); }
-
-    // latitude gridlines every 4 degrees
-    var gridLat = [];
-    for (var g = Math.ceil(latMin/4)*4; g <= latMax; g += 4) gridLat.push(g);
-    var gridLines = gridLat.map(function(g){
-      var y = py(g);
-      return '<line class="hist-grid" x1="'+pad+'" x2="'+(W-pad)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'"></line>' +
-        '<text class="geo-label" x="'+(W-pad-2)+'" y="'+(y-3).toFixed(1)+'" text-anchor="end">'+g+'°N</text>';
-    }).join('');
-
-    var dots = CITIES.slice().sort(function(a,b){ return b.n - a.n; }).map(function(c){
-      var cx = px(c.lon), cy = py(c.lat), r = radius(c.n), fill = colorFor(c[state.metric]);
-      var dim = matchesQuery(c) ? '' : ' dim';
-      return '<circle class="geo-dot'+dim+'" data-slug="'+c.slug+'" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+fill+'"></circle>';
-    }).join('');
-
-    el.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Mapa de dispersión de ciudades">'+gridLines+dots+'</svg>';
-
-    var svgEl = el.querySelector('svg');
-    Array.prototype.forEach.call(svgEl.querySelectorAll('.geo-dot'), function(dot){
-      var c = CITIES.find(function(x){ return x.slug === dot.dataset.slug; });
-      dot.addEventListener('mouseenter', function(e){
-        showTip(e, '<b>'+c.city+', '+c.state+'</b>' +
-          metricLabel()+': '+fmtMoney.format(c[state.metric])+'<br>'+fmtInt.format(c.n)+' anuncios');
-      });
-      dot.addEventListener('mousemove', moveTip);
-      dot.addEventListener('mouseleave', hideTip);
-    });
-
-    document.getElementById('geo-legend-scale').innerHTML =
-      '<span>'+fmtMoney.format(pMin)+'</span><span>'+fmtMoney.format(pMax)+'</span>';
-
-    var demoR = [90, 1500, 3000].map(function(n){ return radius(n); });
-    var demoW = (demoR[2]*2)+8;
-    document.getElementById('geo-size-demo').innerHTML =
-      '<svg width="'+demoW+'" height="'+(demoR[2]*2+4)+'" viewBox="0 0 '+demoW+' '+(demoR[2]*2+4)+'">' +
-      demoR.map(function(r,i){ var cx = demoR[2]+4; return '<circle cx="'+cx+'" cy="'+(demoR[2]+2)+'" r="'+r.toFixed(1)+'" fill="none" stroke="var(--ink-3)"></circle>'; }).join('') +
-      '</svg>' +
-      '<span class="legend-label" style="font-size:11px">~90 · 1.5k · 3k</span>';
-  }
-
   // ---------- table ----------
   var tableSort = { key: 'price_median', dir: -1 };
   function renderTable(){
@@ -595,7 +517,6 @@
     renderKpis();
     renderRanking();
     renderHistogram();
-    renderGeo();
     renderTable();
   }
 
@@ -603,7 +524,6 @@
     state.query = e.target.value.trim().toLowerCase();
     renderRanking();
     renderTable();
-    renderGeo();
   });
 
   Array.prototype.forEach.call(document.querySelectorAll('.segmented button'), function(btn){
@@ -612,13 +532,8 @@
       btn.setAttribute('aria-pressed', 'true');
       state.metric = btn.dataset.metric;
       renderRanking();
-      renderGeo();
     });
   });
-
-  var mq = window.matchMedia('(prefers-color-scheme: dark)');
-  mq.addEventListener('change', renderGeo);
-  new MutationObserver(renderGeo).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
 
   renderMeta();
   renderAll();
