@@ -299,7 +299,7 @@
   </main>
 
   <footer>
-    <p><b style="color:var(--ink-1)">Qué mide este panel.</b> El precio es la tarifa disponible en la búsqueda de Airbnb para una estancia de martes a jueves (2 noches), reservada 29 días antes de la llegada — no el precio de lista de todos los anuncios ni descuentos de última hora. La tarifa por noche se calcula dividiendo entre 2 el subtotal de hospedaje de la estancia. La unidad de análisis es la ciudad, acotada a su mancha urbana; se excluye la Zona Metropolitana del Valle de México por alcance del proyecto.</p>
+    <p><b style="color:var(--ink-1)">Qué mide este panel.</b> El precio es la tarifa disponible en la búsqueda de Airbnb para una estancia de martes a jueves (2 noches), reservada 29 días antes de la llegada — no el precio de lista de todos los anuncios ni descuentos de última hora. La tarifa por noche se calcula dividiendo entre 2 el subtotal de hospedaje de la estancia. La unidad de análisis es la ciudad, acotada a su mancha urbana. Incluye la Ciudad de México (las 16 alcaldías); se excluye el resto de la Zona Metropolitana del Valle de México (municipios del Edo. de México) por alcance del proyecto.</p>
   </footer>
 
 </div>
@@ -355,7 +355,7 @@
       [fmtInt.format(NAT.n_listings), 'Anuncios'],
       [fmtMoney.format(NAT.price_median), 'Mediana nacional /noche'],
       ['mar–jue · 2 noches', 'Estancia de referencia'],
-      ['excluye CDMX/ZMVM', 'Cobertura'],
+      ['incluye CDMX, excluye resto de la ZMVM', 'Cobertura'],
     ];
     el.innerHTML = items.map(function(it){
       return '<div class="meta-item"><span class="v">'+it[0]+'</span><span class="k">'+it[1]+'</span></div>';
