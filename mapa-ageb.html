@@ -74,7 +74,7 @@
   for (const c of sorted){
     const opt = document.createElement('option');
     opt.value = c.id;
-    opt.textContent = citiesConAgeb.has(c.id) ? `${c.city}, ${c.state}` : `${c.city}, ${c.state} (sin cobertura AGEB)`;
+    opt.textContent = citiesConAgeb.has(c.id) ? nombreCiudad(c) : `${nombreCiudad(c)} (sin cobertura AGEB)`;
     opt.disabled = !citiesConAgeb.has(c.id);
     select.appendChild(opt);
   }

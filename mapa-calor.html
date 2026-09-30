@@ -57,7 +57,7 @@
   for (const c of sorted){
     const opt = document.createElement('option');
     opt.value = c.id;
-    opt.textContent = `${c.city}, ${c.state}`;
+    opt.textContent = nombreCiudad(c);
     select.appendChild(opt);
   }
 

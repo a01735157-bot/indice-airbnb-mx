@@ -60,6 +60,13 @@ select, input[type="text"]{
   width:100%; padding:7px 9px; border-radius:2px; border:2px solid var(--ink-1);
   background:var(--surface); color:var(--ink-1); font-size:13px; font-family:inherit;
 }
+select{
+  appearance:none; -webkit-appearance:none;
+  padding-right:30px; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%232b1d12' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 8px center; background-size:14px;
+  text-overflow:ellipsis;
+}
 .legend-gradient{ height:10px; border:1px solid var(--ink-1); background:linear-gradient(90deg, var(--price-1), var(--price-2), var(--price-3), var(--price-4), var(--price-5)); border-radius:2px; }
 .legend-scale{ display:flex; justify-content:space-between; font-size:11px; color:var(--ink-3); margin-top:4px; }
 .stat-row{ display:flex; justify-content:space-between; font-size:12.5px; padding:3px 0; border-top:1px solid var(--grid); }

@@ -23,6 +23,7 @@ const fmtMoney = new Intl.NumberFormat('es-MX', { style:'currency', currency:'MX
 const fmtInt = new Intl.NumberFormat('es-MX');
 function fmtPct(v){ return v == null ? '—' : (v*100).toFixed(1) + '%'; }
 function fmtRating(v){ return v == null ? '—' : v.toFixed(2); }
+function nombreCiudad(c){ return c.city === c.state ? c.city : `${c.city}, ${c.state}`; }
 
 const BASEMAP_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const BASEMAP_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';

@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Índice Airbnb México</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -397,7 +398,7 @@
       var hidden = matchesQuery(c) ? '' : ' hidden';
       return '<div class="rank-row'+hidden+'" data-slug="'+c.slug+'">' +
         '<span class="rank-rank">'+(i+1)+'</span>' +
-        '<span class="rank-name">'+c.city+' <span class="state">'+c.state+'</span></span>' +
+        '<span class="rank-name">'+c.city+(c.city===c.state?'':' <span class="state">'+c.state+'</span>')+'</span>' +
         '<span class="rank-track"><span class="rank-fill" style="width:'+pct+'%"></span></span>' +
         '<span class="rank-value">'+fmtMoney.format(c[state.metric])+'</span>' +
         '</div>';
@@ -405,7 +406,7 @@
     Array.prototype.forEach.call(el.querySelectorAll('.rank-row'), function(row){
       var c = CITIES.find(function(x){ return x.slug === row.dataset.slug; });
       row.addEventListener('mouseenter', function(e){
-        showTip(e, '<b>'+c.city+', '+c.state+'</b>' +
+        showTip(e, '<b>'+(c.city===c.state?c.city:c.city+', '+c.state)+'</b>' +
           metricLabel()+': '+fmtMoney.format(c[state.metric])+'<br>' +
           fmtInt.format(c.n)+' anuncios · '+fmtRating(c.rating_mean)+'★ · '+fmtPct(c.pct_superhost)+' superanfitrión');
       });
