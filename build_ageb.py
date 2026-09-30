@@ -36,7 +36,10 @@ def reproyectar(geom):
     return shp_transform(lambda x, y: _TRANSFORMER.transform(x, y), geom)
 
 ROOT = Path(__file__).parent
-PAQUETE_NACIONAL = Path.home() / "Downloads" / "794551163061_s.zip"
+# INEGI le pone a este archivo un nombre críptico distinto cada vez que se
+# descarga (ej. "794551163061_s.zip"); hay que renombrarlo a este nombre fijo
+# despues de bajarlo. Ver instrucciones en build_mapas_instrucciones.md.
+PAQUETE_NACIONAL = Path.home() / "Downloads" / "inegi_marco_geoestadistico_2025.zip"
 WORKDIR = Path.home() / "Downloads" / "mg2025_extracted"
 MIN_LISTINGS_POR_AGEB = 3
 SIMPLIFY_TOLERANCE = 0.00015  # ~15m, reduce vertices sin deformar la forma
