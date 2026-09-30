@@ -64,9 +64,9 @@
     const v = feature.properties[metric];
     const t = v == null ? 0 : (v - vMin) / (vMax - vMin || 1);
     return {
-      fillColor: v == null ? '#cfc6b8' : interpolateRamp(t),
+      fillColor: v == null ? '#c9beae' : interpolateRamp(t),
       fillOpacity: 0.82,
-      color: '#2b1d12', weight: 1.4,
+      color: '#1c1815', weight: 1.4,
     };
   }
 

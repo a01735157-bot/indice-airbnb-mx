@@ -74,7 +74,7 @@
       const t = (c[metric] - pMin) / (pMax - pMin || 1);
       const marker = L.circleMarker([c.lat, c.lon], {
         radius: radius(c.n),
-        color: '#2b1d12', weight: 1,
+        color: '#1c1815', weight: 1,
         fillColor: interpolateRamp(t), fillOpacity: 0.85,
       }).addTo(map);
 

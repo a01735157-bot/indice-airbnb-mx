@@ -1,48 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
 :root{
   color-scheme: light;
-  --bg-page:#f0e6d8; --surface:#fbf6ee; --surface-2:#e6d8c3;
-  --ink-1:#2b1d12; --ink-2:#6b543f; --ink-3:#9c8770;
-  --grid:#ddccb2; --border:rgba(43,29,18,.20);
-  --coffee-ink:#5c3a1f;
-  --badge-bg:#e7cda8; --badge-ink:#45280f;
-  --price-1:#d9b48a; --price-2:#c08a52; --price-3:#96602e; --price-4:#6b3f1a; --price-5:#45280f;
-  --surface-a85: rgba(251,246,238,.85);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%232b1d12' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
+  --bg-page:#f2efec; --surface:#fffdfb; --surface-2:#e3ddd5;
+  --ink-1:#1c1815; --ink-2:#5c5248; --ink-3:#948a7e;
+  --grid:#ddd3c4; --border:rgba(28,24,21,.20);
+  --coffee-ink:#b5601f;
+  --badge-bg:#f0d3ab; --badge-ink:#6b3810;
+  --price-1:#f0d3ab; --price-2:#dba15c; --price-3:#c47c33; --price-4:#b5601f; --price-5:#6b3810;
+  --surface-a85: rgba(255,253,251,.85);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%231c1815' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg-page:#1c140d; --surface:#251c13; --surface-2:#2e2318;
-    --ink-1:#f2e6d3; --ink-2:#cdb89c; --ink-3:#8f7a63;
-    --grid:#3a2c1d; --border:rgba(242,230,211,.18);
-    --coffee-ink:#d9b48a;
-    --badge-bg:#4a331f; --badge-ink:#f0d9b8;
-    --price-1:#f0d9b8; --price-2:#d9b48a; --price-3:#c08a52; --price-4:#96602e; --price-5:#6b3f1a;
-    --surface-a85: rgba(37,28,19,.85);
-    --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23f2e6d3' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
+    --bg-page:#17140f; --surface:#211d17; --surface-2:#2b251c;
+    --ink-1:#f0e9df; --ink-2:#c4b8a8; --ink-3:#8f8478;
+    --grid:#3a332a; --border:rgba(240,233,223,.18);
+    --coffee-ink:#dba15c;
+    --badge-bg:#4a3319; --badge-ink:#f0d3ab;
+    --price-1:#f5e2c8; --price-2:#e8c397; --price-3:#d99f5f; --price-4:#c47c33; --price-5:#8a5220;
+    --surface-a85: rgba(33,29,23,.85);
+    --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23f0e9df' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --bg-page:#1c140d; --surface:#251c13; --surface-2:#2e2318;
-  --ink-1:#f2e6d3; --ink-2:#cdb89c; --ink-3:#8f7a63;
-  --grid:#3a2c1d; --border:rgba(242,230,211,.18);
-  --coffee-ink:#d9b48a;
-  --badge-bg:#4a331f; --badge-ink:#f0d9b8;
-  --price-1:#f0d9b8; --price-2:#d9b48a; --price-3:#c08a52; --price-4:#96602e; --price-5:#6b3f1a;
-  --surface-a85: rgba(37,28,19,.85);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23f2e6d3' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
+  --bg-page:#17140f; --surface:#211d17; --surface-2:#2b251c;
+  --ink-1:#f0e9df; --ink-2:#c4b8a8; --ink-3:#8f8478;
+  --grid:#3a332a; --border:rgba(240,233,223,.18);
+  --coffee-ink:#dba15c;
+  --badge-bg:#4a3319; --badge-ink:#f0d3ab;
+  --price-1:#f5e2c8; --price-2:#e8c397; --price-3:#d99f5f; --price-4:#c47c33; --price-5:#8a5220;
+  --surface-a85: rgba(33,29,23,.85);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23f0e9df' d='M3.5 5.5l4.5 5 4.5-5z'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box;}
 html,body{ height:100%; margin:0; }
 body{
   background:var(--bg-page); color:var(--ink-1);
-  font-family:"Work Sans", system-ui, -apple-system, sans-serif;
+  font-family:"DM Sans", system-ui, -apple-system, sans-serif;
   font-size:15px; line-height:1.5;
 }
-.mono{ font-family:"Space Mono", ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.mono{ font-family:"DM Mono", ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
 a{ color:var(--coffee-ink); }
 
 /* ---------- top strip ---------- */

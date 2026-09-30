@@ -1,5 +1,5 @@
 // Utilidades compartidas por los 3 mapas
-const RAMP = ['#d9b48a', '#c08a52', '#96602e', '#6b3f1a', '#45280f'];
+const RAMP = ['#f0d3ab', '#dba15c', '#c47c33', '#b5601f', '#6b3810'];
 
 function hexToRgb(hex){
   hex = hex.replace('#','');

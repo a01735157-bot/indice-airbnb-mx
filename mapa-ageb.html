@@ -89,7 +89,7 @@
     const vMin = Math.min(...values), vMax = Math.max(...values);
     const v = feature.properties[metric];
     const t = (v - vMin) / (vMax - vMin || 1);
-    return { fillColor: interpolateRamp(t), fillOpacity: 0.75, color: '#2b1d12', weight: 1.2 };
+    return { fillColor: interpolateRamp(t), fillOpacity: 0.75, color: '#1c1815', weight: 1.2 };
   }
 
   function loadCity(id){
